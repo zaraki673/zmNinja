@@ -24,9 +24,16 @@ if [ -d "$i" ]; then
 	echo "------------------------------------------------------------------------"
 	exe rm -fr $i/app
 	exe mkdir $i/app
+	exe mkdir $i/app/node_modules
+        exe cp -R node_modules/electron-window-state $i/app/node_modules
+        exe cp -R node_modules/jsonfile $i/app/node_modules
+        exe cp -R node_modules/mkdirp $i/app/node_modules
+        exe cp -R node_modules/deep-equal $i/app/node_modules
 	exe cp -R www/* $i/app/
 	exe cp electron_js/* $i/app
 	exe cp www/ZMNINJA-LICENSE-DESKTOP-CLIENT.txt ../$DIRNAME
+        echo $APPVER > ../$DIRNAME/version
+	exe cp resources/icon.png ../$DIRNAME
 	exe cd $i
 	cat app/js/DataModel.js | sed "s/var zmAppVersion[ ]*=[ ]*\"unknown\"/var zmAppVersion=\"$APPVER\"/" > app/js/DataModel.js.tmp
 	exe rm -fr app/js/DataModel.js

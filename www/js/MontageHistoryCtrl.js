@@ -292,6 +292,7 @@ angular.module('zmApp.controllers').controller('zmApp.MontageHistoryCtrl', ['$sc
             {
                 mid = data.events[i].Event.MonitorId;
                 eid = data.events[i].Event.Id;
+                //console.log ("Event ID:"+eid);
                 stime = data.events[i].Event.StartTime;
                 // only take the first one for each monitor
                 for (var j = 0; j < $scope.MontageMonitors.length; j++)
@@ -1377,7 +1378,9 @@ angular.module('zmApp.controllers').controller('zmApp.MontageHistoryCtrl', ['$sc
             $rootScope.zmPopup = $ionicPopup.alert(
             {
                 title: $translate.instant('kNoMonitors'),
-                template: $translate.instant('kPleaseCheckCredentials')
+                template: $translate.instant('kPleaseCheckCredentials'),
+                okText: $translate.instant('kButtonOk'),
+                cancelText: $translate.instant('kButtonCancel'),
             });
             $ionicHistory.nextViewOptions(
             {

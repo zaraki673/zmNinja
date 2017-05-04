@@ -41,9 +41,23 @@ angular.module('zmApp.controllers')
                 text: 'Español',
                 value: 'es'
             },
+
             {
-                text: 'Italian',
+                text: 'Français',
+                value: 'fr'
+            },
+
+            {
+                text: 'Deutsch',
+                value: 'de'
+            },
+            {
+                text: 'Italiano',
                 value: 'it'
+            },
+            {
+                text: 'Nederlands',
+                value: 'nl'
             },
             {
                 text: 'Polski',
@@ -107,7 +121,7 @@ angular.module('zmApp.controllers')
             'montageOrder': '',
             'montageHiddenOrder': '',
             'montageArraySize': '0',
-
+            'showMontageSubMenu': false,
             'graphSize': 2000,
             'enableAlarmCount': true,
             'minAlarmCount': 1,
@@ -121,6 +135,8 @@ angular.module('zmApp.controllers')
             'enableBlog': true,
             'use24hr': false,
             'packeryPositions': '',
+            'currentMontageProfile': '',
+            'packeryPositionsArray': {},
             'EHpackeryPositions': '',
             'packerySizes': '',
             'timelineModalGraphType': 'all',
@@ -132,6 +148,8 @@ angular.module('zmApp.controllers')
             'vibrateOnPush': true,
             'soundOnPush': true,
             'cycleMonitors': false,
+            'cycleMontage': false,
+            'cycleMontageInterval': 10, // 10sec
             'cycleMonitorsInterval': 10, // 10sec
             'enableLowBandwidth': false,
             'autoSwitchBandwidth': false,
@@ -140,6 +158,11 @@ angular.module('zmApp.controllers')
             'fastLogin': true,
             'followTimeLine': false,
             'timelineScale': -1,
+            'hideArchived': false,
+            'videoPlaybackSpeed': 2,
+            'enableGIFMP4': false,
+            'enableStrictSSL': false,
+            'enableSlowLoading': false,
 
         };
 
@@ -149,6 +172,27 @@ angular.module('zmApp.controllers')
             'ZM_EVENT_IMAGE_DIGITS': '-1',
             'ZM_PATH_ZMS': ''
         };
+
+
+        function setSSLCerts()
+            {
+                if (!window.cordova) return;
+                if (!loginData.enableStrictSSL)
+                    {
+
+                      //alert("Enabling insecure SSL");
+                      log(">>>> Disabling strict SSL checking (turn off  in Dev Options if you can't connect)");
+                       cordova.plugins.certificates.trustUnsecureCerts(true);
+
+                    }
+                    else
+                    {
+
+                        log(">>>> Enabling strict SSL checking (turn off  in Dev Options if you can't connect)");
+                        cordova.plugins.certificates.trustUnsecureCerts(false);
+                    }
+            }
+
 
         // credit: http://stackoverflow.com/questions/4994201/is-object-empty
         function isEmpty(obj)
@@ -257,25 +301,58 @@ angular.module('zmApp.controllers')
 
         function reloadMonitorDisplayStatus()
         {
-            debug("Loading hidden/unhidden status...");
+            debug("Loading hidden/unhidden status for profile:"+loginData.currentMontageProfile);
+        
             var positionsStr = loginData.packeryPositions;
             //console.log ("positionStr="+positionsStr);
             var positions = {};
-            if (loginData.packeryPositions != '')
+            if (loginData.packeryPositions != '' && loginData.packeryPositions != undefined)
             {
+                console.log ("positions="+loginData.packeryPositions);
+
+
                 positions = JSON.parse(positionsStr);
                 for (var m = 0; m < monitors.length; m++)
                 {
+                    var positionFound = false;
                     for (var p = 0; p < positions.length; p++)
                     {
                         if (monitors[m].Monitor.Id == positions[p].attr)
                         {
                             monitors[m].Monitor.listDisplay = positions[p].display;
+                            positionFound = true;
                             debug("DataModel: Setting MID:" + monitors[m].Monitor.Id + " to " + monitors[m].Monitor.listDisplay);
                         }
 
                     }
+                    if (!positionFound)
+                    {
+                        if (loginData.currentMontageProfile != $translate.instant('kMontageDefaultProfile'))
+                        {
+                            monitors[m].Monitor.listDisplay = 'noshow';
+                            console.log("*************DISABLE NEW MONITOR");
+                        }
+                        else // make sure we add it because its show all view
+                        {
+                            monitors[m].Monitor.listDisplay = 'show';
+                            console.log("*************ENABLE NEW MONITOR");
+                        }
+                    
+
+                    }
+                     
                 }
+
+            }
+            else // if there are no packery positions, make sure all are displayed! 
+            {
+                debug ("no packery profile, making sure monitors are show");
+                for (var m1 = 0; m1 < monitors.length; m1++)
+                {
+                     monitors[m1].Monitor.listDisplay = 'show';
+
+                }
+
 
             }
         }
@@ -536,7 +613,8 @@ angular.module('zmApp.controllers')
                         {
 
                             //console.log ("************* AUGH");
-                            return $http.get(urls[0].url).then(function()
+                            var hDelay = loginData.enableSlowLoading? zm.largeHttpTimeout:zm.httpTimeout;
+                            return $http({method:'GET', timeout:hDelay, url:urls[0].url}).then(function()
                             {
                                 log("Success: reachability on " + urls[0].url);
                                 $ionicLoading.hide();
@@ -579,7 +657,7 @@ angular.module('zmApp.controllers')
 
                 $ionicLoading.show(
                 {
-                    template: "retrieving profile data..."
+                    template: $translate.instant('kRetrievingProfileData'),
                 });
 
                 localforage.getItem("serverGroupList").then(function(val)
@@ -636,7 +714,7 @@ angular.module('zmApp.controllers')
                     var sname;
                     $ionicLoading.show(
                     {
-                        template: "retrieving profile data..."
+                        template: $translate.instant('kRetrievingProfileData'),
                     });
                     localforage.getItem("defaultServerName")
                         .then(function(val)
@@ -755,6 +833,14 @@ angular.module('zmApp.controllers')
 
                                 }
 
+                                if (typeof loginData.packeryPositionsArray == 'undefined')
+                                {
+                                    debug("packeryPositionsArray does not exist. Setting to empty");
+                                    loginData.packeryPositionsArray = {};
+
+                                }
+
+
                                 if (typeof loginData.packeryPositions == 'undefined')
                                 {
                                     debug("packeryPositions does not exist. Setting to empty");
@@ -841,6 +927,20 @@ angular.module('zmApp.controllers')
 
                                 }
 
+                                if (typeof loginData.cycleMontage == 'undefined')
+                                {
+
+                                    loginData.cycleMontage = false;
+
+                                }
+
+                                if (typeof loginData.cycleMontageInterval == 'undefined')
+                                {
+
+                                    loginData.cycleMontageInterval = 10;
+
+                                }
+
                                 if (typeof loginData.enableLowBandwidth == 'undefined')
                                 {
 
@@ -888,6 +988,13 @@ angular.module('zmApp.controllers')
 
                                 }
 
+                                if (typeof loginData.currentMontageProfile == 'undefined')
+                                {
+
+                                    loginData.currentMontageProfile = '';
+
+                                }
+
                                 if (typeof loginData.followTimeLine == 'undefined')
                                 {
 
@@ -902,10 +1009,56 @@ angular.module('zmApp.controllers')
 
                                 }
 
+
+                                if (typeof loginData.showMontageSubMenu == 'undefined')
+                                {
+
+                                    loginData.showMontageSubMenu = false;
+
+                                }
+
+
+
                                 if (typeof loginData.monSingleImageQuality == 'undefined')
                                 {
 
                                     loginData.monSingleImageQuality = 100;
+
+                                }
+
+                                if (typeof loginData.hideArchived == 'undefined')
+                                {
+
+                                    loginData.hideArchived = false;
+
+                                }
+
+                                if (typeof loginData.videoPlaybackSpeed == 'undefined')
+                                {
+
+                                    loginData.videoPlaybackSpeed = 2;
+
+                                }
+
+                                if (typeof loginData.enableGIFMP4 == 'undefined')
+                                {
+
+                                    loginData.enableGIFMP4 = true;
+
+                                }
+
+                                if (typeof loginData.enableSlowLoading == 'undefined')
+                                {
+
+                                    loginData.enableSlowLoading = false;
+                                    
+                                }
+                                log ("SlowDelay is: "+loginData.enableSlowLoading);
+
+                                if (typeof loginData.enableStrictSSL == 'undefined')
+                                {
+                                    
+                                    loginData.enableStrictSSL = false;
 
                                 }
 
@@ -915,6 +1068,11 @@ angular.module('zmApp.controllers')
                             {
                                 log("defaultServer configuration NOT found. Keeping login at defaults");
                             }
+
+                            // now set up SSL - need to do it after data return
+                            // from local forage
+                            setSSLCerts();
+                            
 
                             // FIXME: HACK: This is the latest entry point into dataModel init, so start portal login after this
                             // not the neatest way
@@ -1165,11 +1323,13 @@ angular.module('zmApp.controllers')
                         {
                             if (success.data.version)
                             {
+                                $rootScope.apiValid = true;
                                 d.resolve(success.data.version);
                             }
                             else
                             {
-                                d.resolve("0.0.0");
+                                $rootScope.apiValid = false;
+                                d.reject("-1.-1.-1");
                             }
                             return (d.promise);
 
@@ -1178,6 +1338,7 @@ angular.module('zmApp.controllers')
                         {
                             debug("getAPIversion error handler " + JSON.stringify(error));
                             d.reject("-1.-1.-1");
+                            $rootScope.apiValid = false;
                             return (d.promise);
                         });
                 return (d.promise);
@@ -1363,6 +1524,17 @@ angular.module('zmApp.controllers')
 
             // I've wrapped this function in my own promise even though http returns a promise.
             //-----------------------------------------------------------------------------
+            //
+            
+            // returns a non promise version 
+            // so if monitors is null, it will return null
+            // As of now, this is only used by EventServer.js to 
+            // send the right list of monitors after registration
+            // token
+            getMonitorsNow: function()
+            {
+                return monitors;
+            },
 
             getMonitors: function(forceReload)
             {

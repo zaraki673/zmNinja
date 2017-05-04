@@ -13,6 +13,20 @@ angular.module('zmApp.controllers').controller('MonitorModalCtrl', ['$scope', '$
     var cycleHandle;
     var nphTimer;
     var ld = NVRDataModel.getLogin();
+    $scope.svgReady = false;
+    $scope.zoneArray = [];
+    var originalZones = [];
+    $scope.isZoneEdit = false;
+    var _moveStart = false;
+    var targetID = "";
+    $scope.imageZoomable = true;
+
+
+    $scope.csize = ($rootScope.platformOS == 'desktop') ? 10:20;
+
+
+     window.addEventListener("resize", function(){imageLoaded();}, false);
+
 
     $rootScope.authSession = "undefined";
 
@@ -390,6 +404,296 @@ angular.module('zmApp.controllers').controller('MonitorModalCtrl', ['$scope', '$
 
     };
 
+
+    $scope.saveZones = function()
+    {
+        var str="";
+        for (var i=0; i < originalZones.length; i++)
+        {
+            str = str + "o:"+originalZones[i].coords+"<br/>n:"+$scope.zoneArray[i].coords+"--------------------------------------------------<br/>";
+
+        }
+
+        $rootScope.zmPopup = SecuredPopups.show('confirm',
+            {
+                title: 'Sure',
+                template: str,
+                okText: $translate.instant('kButtonOk'),
+                cancelText: $translate.instant('kButtonCancel'),
+            });
+
+    };
+
+    $scope.changeCircleSize = function()
+    {
+        $scope.csize = Math.max (($scope.csize + 5) % 31, 10);
+
+    };
+
+    $scope.toggleZoneEdit = function()
+    {
+        $scope.isZoneEdit = !$scope.isZoneEdit;
+        
+        
+         $scope.connKey = (Math.floor((Math.random() * 999999) + 1)).toString();
+
+        
+        if ($scope.isZoneEdit)
+        {
+             $ionicScrollDelegate.$getByHandle("imgscroll").zoomTo(1, true);
+             $scope.imageZoomable = false;
+             //document.getElementById("imgscroll").zooming="false";
+
+            for (var i=0; i < $scope.circlePoints.length; i++)
+            {
+                var t = document.getElementById("circle-"+i);
+                if (t)
+                {
+                    t.removeEventListener("touchstart",moveStart);
+                    t.removeEventListener("mousedown",moveStart);
+                    //t.removeEventListener("mousemove",moveContinue);
+                    //t.removeEventListener("mouseup",moveStop);
+
+
+                    t.addEventListener("touchstart",moveStart); 
+                    t.addEventListener("mousedown",moveStart); 
+                    //t.addEventListener("mousemove",moveContinue);
+                    //t.addEventListener("mouseup",moveStop);
+
+
+                    console.log ("Found circle-"+i);   
+                }
+                else
+                {
+                    console.log ("did not find circle-"+i);
+                }
+                
+            }
+        }
+        else // get out of edit
+        {
+
+            $scope.imageZoomable = true;
+        }
+
+    };
+
+    $scope.toggleZone = function()
+    {
+        $scope.showZones = !$scope.showZones;
+        if (!$scope.showZones)
+            $scope.isZoneEdit = false;
+    };
+
+    $scope.imageLoaded = function()
+    {
+        imageLoaded();
+    };
+
+    $scope.checkZoom = function()
+    {
+        //var z = $ionicScrollDelegate.$getByHandle("imgscroll").getScrollPosition().zoom;
+        //imageLoaded();
+
+    };
+
+    $scope.circleTouch = function (evt)
+    {
+        console.log ("TOUCH");
+    };
+
+    //$scope.circleOnDrag = function (evt, ndx)
+    function recomputePolygons (ax, ay, ndx,z)
+    {
+
+       
+        // we get screen X/Y - need to translate
+        // to SVG points
+        console.log ("recompute with",ax,"&",ay);
+        var svg=document.getElementById('zsvg');
+        var pt = svg.createSVGPoint();
+        pt.x = ax;
+        pt.y = ay;
+        var svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
+
+        $scope.circlePoints[ndx].x = Math.round(svgP.x);
+        $scope.circlePoints[ndx].y = Math.round(svgP.y);
+
+        // get related polygon set
+        var zi = $scope.circlePoints[ndx].zoneIndex;
+        var newPoints="";
+        for ( var i=0; i < $scope.circlePoints.length; i++)
+        {
+            if ($scope.circlePoints[i].zoneIndex == zi)
+            {
+                newPoints = newPoints  + " " +$scope.circlePoints[i].x+","+$scope.circlePoints[i].y;
+            }
+            console.log ("recomputed polygon:", newPoints);
+        }
+       // console.log ("OLD ZONE FOR:"+zi+" is "+$scope.zoneArray[zi].coords );
+        //console.log ("NEW ZONE FOR:"+zi+" is "+newPoints);
+        $scope.zoneArray[zi].coords = newPoints;
+
+        //console.log ("INDEX="+ndx+" DRAG="+svgP.x+":"+svgP.y);
+
+    }
+
+    // credit: http://stackoverflow.com/questions/41411891/most-elegant-way-to-parse-scale-and-re-string-a-string-of-number-co-ordinates?noredirect=1#41411927
+    // This function scales coords of zones based on current image size
+    function scaleCoords(string, sx, sy) {
+        var f = [sx, sy];
+        return string.split(' ').map(function (a) {
+            return a.split(',').map(function (b, i) {
+                return Math.round(b * f[i]);
+            }).join(',');
+        }).join(' ');
+    }
+
+    function moveContinue(event)
+    {
+        if (!_moveStart) {return;}
+        
+            console.log ("CONTINUE: target id="+targetID);
+            
+
+            /*if(event.preventDefault) event.preventDefault();
+            if (event.gesture) event.gesture.preventDefault() ;
+            if (event.gesture) event.gesture.stopPropagation();*/
+
+            var x,y;
+
+            var z = $ionicScrollDelegate.$getByHandle("imgscroll").getScrollPosition().zoom;
+            console.log ("zoom is:"+z);
+           
+            //console.log(event, this, "t");
+            if (event.touches)
+            {
+                //console.log ("TOUCH");
+                x = event.targetTouches[0].pageX;
+                y = event.targetTouches[0].pageY;
+                
+            }
+            else
+            {
+                //console.log ("MOUSE");
+                x = event.clientX  ;
+                y = event.clientY  ;
+
+
+            }
+            
+          
+            console.log ("X="+x+" Y="+y + " sl="+document.body.scrollLeft+ " sy="+document.body.scrollTop);
+            $timeout (function() {recomputePolygons (x,y,targetID,1);});
+
+
+    }
+
+    function moveStop (event)
+    {
+        _moveStart = false;
+        console.log ("STOP");
+    }
+
+    function moveStart(event)
+    {
+        
+            _moveStart=true;
+            targetID = event.target.id.substring(7);
+            console.log ("START: target id="+targetID);
+
+            if(event.preventDefault) event.preventDefault();
+            if (event.gesture) event.gesture.preventDefault() ;
+            if (event.gesture) event.gesture.stopPropagation();
+
+            var z = $ionicScrollDelegate.$getByHandle("imgscroll").getScrollPosition().zoom;
+            console.log ("zoom is:"+z);
+
+            var x,y;
+            // perhaps event.targetTouches[0]?
+            if (event.touches)
+            {
+                //console.log(event.changedTouches[0], this, "t");
+                x  = event.touches[0].pageX;
+                y  = event.touches[0].pageY;
+
+            }
+            else
+            {
+                //console.log(event, this, "t");
+                x = event.clientX ;
+                y = event.clientY  ;
+
+            }
+            console.log ("X="+x+" Y="+y + " sl="+document.body.scrollLeft+ " sy="+document.body.scrollTop);
+
+    }
+    
+
+    // called when the live monitor image loads
+    // this is a good time to calculate scaled zone points
+    function imageLoaded()
+    {
+        
+        var img =document.getElementById("singlemonitor");
+
+        //$scope.cw = img.naturalWidth;
+        //$scope.ch = img.naturalHeight;
+        
+        $scope.cw = img.naturalWidth;
+        $scope.ch = img.naturalHeight;
+
+        //console.log ("REPORTED DIM:" + $scope.cw+ "x"+$scope.ch );
+        //console.log ("ORIGINAL DIM:" + img.naturalWidth+ "x"+img.naturalHeight);
+        //https://server/zm/api/zones/forMonitor/7.json
+        //
+        $scope.zoneArray = [];
+        $scope.circlePoints = [];
+
+        var ow = $scope.monitor.Monitor.Width;
+        var oh = $scope.monitor.Monitor.Height;
+
+       // console.log ("MONITOR IS: "+JSON.stringify($scope.monitor));
+
+       // console.log ("ORIGINAL WH="+ow+"x"+oh);
+
+        for (var i=0; i < originalZones.length; i++)
+        {
+            var sx = $scope.cw/ow;
+            var sy = $scope.ch/oh;
+            //$scope.zoneArray.push({
+               // coords:scaleCoords(originalZones[i].coords,sx,sy),
+             //   type:originalZones[i].type});
+             $scope.zoneArray.push({
+                coords:originalZones[i].coords,
+                type:originalZones[i].type});
+      
+      
+        }
+
+        // now create a points array for circle handles
+        for (i=0; i < $scope.zoneArray.length; i++)
+        {
+            /*jshint loopfunc: true */
+            console.log ("ZONE ARRAY="+$scope.zoneArray[i].coords);
+             $scope.zoneArray[i].coords.split(' ')
+             .forEach( function(itm) 
+                { 
+                    var o=itm.split(','); 
+                    $scope.circlePoints.push({x:o[0],y:o[1], zoneIndex:i});
+                     
+                   // console.log ("CIRCLE X="+o[0]+"Y="+o[1]);
+                });            
+
+        }
+
+
+
+
+
+
+    }
+
     //-------------------------------------------------------------
     // this is checked to make sure we are not pulling images
     // when app is in background. This is a problem with Android,
@@ -410,6 +714,7 @@ angular.module('zmApp.controllers').controller('MonitorModalCtrl', ['$scope', '$
 
     $scope.controlPTZ = function(monitorId, cmd)
     {
+        console.log ("PTZ command is"+cmd);
         controlPTZ(monitorId, cmd);
     };
 
@@ -421,7 +726,7 @@ angular.module('zmApp.controllers').controller('MonitorModalCtrl', ['$scope', '$
         //curl -X POST "http://server.com/zm/index.php?view=request" -d
         //"request=control&user=admin&passwd=xx&id=4&control=moveConLeft"
 
-        if (!$scope.ptzMoveCommand)
+        if ($scope.ptzMoveCommand=="undefined")
         {
             $ionicLoading.show(
             {
@@ -532,6 +837,11 @@ angular.module('zmApp.controllers').controller('MonitorModalCtrl', ['$scope', '$
 
     $scope.onSwipe = function(m, d)
     {
+        if ($scope.isZoneEdit)
+        {
+            NVRDataModel.log ("swipe disabled as you are in edit mode");
+            return;
+        }
         var ld = NVRDataModel.getLogin();
         if (!ld.canSwipeMonitors) return;
 
@@ -547,6 +857,11 @@ angular.module('zmApp.controllers').controller('MonitorModalCtrl', ['$scope', '$
 
     function moveToMonitor(m, d)
     {
+
+        if ($scope.isZoneEdit)
+        {
+            NVRDataModel.log ("Not cycling, as you are editing zones");
+        }
         var curstate = $ionicHistory.currentStateName();
         var found = 0;
         var mid;
@@ -621,6 +936,9 @@ angular.module('zmApp.controllers').controller('MonitorModalCtrl', ['$scope', '$
                 $scope.monitorId = mid;
                 $scope.monitorName = NVRDataModel.getMonitorName(mid);
                 $scope.monitor = NVRDataModel.getMonitorObject(mid);
+                $scope.zoneArray=[];
+                $scope.circlePoints=[];
+                getZones();
                 configurePTZ($scope.monitorId);
             }, 200);
         }
@@ -919,6 +1237,11 @@ angular.module('zmApp.controllers').controller('MonitorModalCtrl', ['$scope', '$
     {
 
         $scope.imageFit = !$scope.imageFit;
+        if ($scope.imageFit) 
+            $scope.aspectFit="xMidYMid meet";
+        else
+            $scope.aspectFit = "xMidYMid slice";
+
         // console.log("Switching image style to " + $scope.imageFit);
     };
 
@@ -1091,11 +1414,32 @@ angular.module('zmApp.controllers').controller('MonitorModalCtrl', ['$scope', '$
         });
     }
 
+    $scope.toggleListMenu = function()
+    {
+
+        
+        $scope.isToggleListMenu = !$scope.isToggleListMenu;
+        //console.log ("isToggleListMenu:"+$scope.isToggleListMenu);
+    };
+
     //-------------------------------------------------------------
     // Zoom in and out via +- for desktops
     //-------------------------------------------------------------
     $scope.zoomImage = function(val)
     {
+
+        if ($scope.isZoneEdit)
+        {
+            $ionicLoading.show(
+            {
+                //template: $translate.instant('kError'),
+                template: 'zoom disabled in zone edit mode',
+                noBackdrop: true,
+                duration: 2000
+            });
+
+            return;
+        }
         var zl = parseInt($ionicScrollDelegate.$getByHandle("imgscroll").getScrollPosition().zoom);
         if (zl == 1 && val == -1)
         {
@@ -1123,7 +1467,7 @@ angular.module('zmApp.controllers').controller('MonitorModalCtrl', ['$scope', '$
         $scope.ptzSleepCommand = "";
         $scope.ptzResetCommand = "";
 
-        $scope.ptzMoveCommand = "";
+        $scope.ptzMoveCommand = "undefined";
         $scope.ptzStopCommand = "";
 
         $scope.zoomInCommand = "";
@@ -1170,6 +1514,8 @@ angular.module('zmApp.controllers').controller('MonitorModalCtrl', ['$scope', '$
                             $scope.ptzMoveCommand = "move"; // start with as move;
                             $scope.ptzStopCommand = "";
 
+                            console.log ("GOT CONTROL "+JSON.stringify(data.control.Control));
+
                             if (data.control.Control.CanZoom == '1')
                             {
                                 $scope.canZoom = true;
@@ -1193,12 +1539,33 @@ angular.module('zmApp.controllers').controller('MonitorModalCtrl', ['$scope', '$
 
                             NVRDataModel.debug("configurePTZ: control data returned " + JSON.stringify(data));
 
+
+                            if (data.control.Control.CanMoveMap == '1')
+                            {
+
+                                //seems moveMap uses Up/Down/Left/Right, 
+                                // so no prefix
+                                $scope.ptzMoveCommand = "";
+                                $scope.ptzStopCommand = "moveStop";
+                                console.log ("MoveAbs set");
+                            }
+
+                            if (data.control.Control.CanMoveAbs == '1')
+                            {
+
+                                $scope.ptzMoveCommand = "moveAbs";
+                                $scope.ptzStopCommand = "moveStop";
+                                console.log ("MoveAbs set");
+                            }
+
                             if (data.control.Control.CanMoveRel == '1')
                             {
 
                                 $scope.ptzMoveCommand = "moveRel";
                                 $scope.ptzStopCommand = "moveStop";
                             }
+
+                            
 
                             // Prefer con over rel if both enabled
                             // I've tested con
@@ -1209,6 +1576,7 @@ angular.module('zmApp.controllers').controller('MonitorModalCtrl', ['$scope', '$
                                 $scope.ptzMoveCommand = "moveCon";
                                 $scope.ptzStopCommand = "moveStop";
                             }
+                            //CanMoveMap
 
                             // presets
                             NVRDataModel.debug("ConfigurePTZ Preset value is " + data.control.Control.HasPresets);
@@ -1219,6 +1587,7 @@ angular.module('zmApp.controllers').controller('MonitorModalCtrl', ['$scope', '$
                                 //$scope.presetAndControl = $translate.instant('kPresets');
 
                                 $scope.ptzPresetCount = parseInt(data.control.Control.NumPresets);
+                            //$scope.ptzPresetCount =80;
 
                                 NVRDataModel.debug("ConfigurePTZ Number of presets is " + $scope.ptzPresetCount);
 
@@ -1320,12 +1689,52 @@ angular.module('zmApp.controllers').controller('MonitorModalCtrl', ['$scope', '$
 
     }
 
+    function getZones()
+    {
+        //https://server/zm/api/zones/forMonitor/7.json
+        var api = NVRDataModel.getLogin().apiurl+"/zones/forMonitor/"+$scope.monitorId+".json";
+        NVRDataModel.debug ("Getting zones using:"+api);
+        originalZones = [];
+        $http.get (api)
+        .then (function (succ) {
+            console.log (JSON.stringify(succ));
+            for (var i=0; i < succ.data.zones.length; i++)
+            {
+                originalZones.push ({
+                    coords:succ.data.zones[i].Zone.Coords, 
+                    area: succ.data.zones[i].Zone.Area,
+                    type:succ.data.zones[i].Zone.Type});
+            }
+
+        },
+        function (err) {
+            NVRDataModel.debug ("Error getting zones :"+JSON.stringify(err));
+
+        });
+
+    }
+
     $scope.$on('modal.shown', function()
     {
 
         $scope.monStatus = "";
+        $scope.isToggleListMenu = true;
+        //console.log (">>>>>>>>>>>>>>>>>>>STOOOP");
         document.addEventListener("pause", onPause, false);
         document.addEventListener("resume", onResume, false);
+
+        /*document.addEventListener("mouseup", moveStop, false);
+        document.addEventListener("touchend", moveStop, false);
+
+        document.addEventL`istener("mousemove", moveContinue, false);
+        document.addEventListener("touchmove", moveContinue, false);*/
+
+        
+
+
+        $scope.showZones = false;
+
+        getZones();
 
         var ld = NVRDataModel.getLogin();
         //currentEvent = $scope.currentEvent;

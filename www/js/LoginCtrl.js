@@ -80,7 +80,9 @@ angular.module('zmApp.controllers').controller('zmApp.LoginCtrl', ['$scope', '$r
             $rootScope.zmPopup = SecuredPopups.show('alert',
             {
                 title: $translate.instant('kError'),
-                template: $translate.instant('kFallback2Configs')
+                template: $translate.instant('kFallback2Configs'),
+                okText: $translate.instant('kButtonOk'),
+                cancelText: $translate.instant('kButtonCancel'),
             });
             return;
 
@@ -173,41 +175,63 @@ angular.module('zmApp.controllers').controller('zmApp.LoginCtrl', ['$scope', '$r
                     return true;
 
                 }
-                var zmServers = NVRDataModel.getServerGroups();
-                //console.log ("YOU WANT TO DELETE " + $scope.loginData.serverName);
-                //console.log ("LENGTH OF SERVERS IS " + Object.keys(zmServers).length);
-                if (Object.keys(zmServers).length > 1)
+                $rootScope.zmPopup = SecuredPopups.show('confirm',
+                {
+                    title: $translate.instant('kDelete'),
+                    template: $translate.instant('kDeleteProfile')+" "+$scope.loginData.serverName,
+                    okText: $translate.instant('kButtonOk'),
+                    cancelText: $translate.instant('kButtonCancel'),
+                }).then(function(res)
                 {
 
-                    NVRDataModel.log("Deleting " + $scope.loginData.serverName);
-                    delete zmServers[$scope.loginData.serverName];
-                    NVRDataModel.setServerGroups(zmServers);
-                    // point to first element
-                    // better than nothing
-                    // note this is actually unordered
-                    $scope.loginData = zmServers[Object.keys(zmServers)[0]];
-                    NVRDataModel.setLogin($scope.loginData);
+                   if (res) 
+                    actuallyDelete();
 
-                    availableServers = Object.keys(NVRDataModel.getServerGroups());
-                    serverbuttons = [
+                });
+
+                
+
+                function actuallyDelete()
+                {
+
+                    var zmServers = NVRDataModel.getServerGroups();
+                    //console.log ("YOU WANT TO DELETE " + $scope.loginData.serverName);
+                    //console.log ("LENGTH OF SERVERS IS " + Object.keys(zmServers).length);
+                    if (Object.keys(zmServers).length > 1)
                     {
-                        text: $translate.instant('kServerAdd') + "..."
-                    }];
-                    for (var servIter = 0; servIter < availableServers.length; servIter++)
-                    {
-                        serverbuttons.push(
+
+                        NVRDataModel.log("Deleting " + $scope.loginData.serverName);
+                        delete zmServers[$scope.loginData.serverName];
+                        NVRDataModel.setServerGroups(zmServers);
+                        // point to first element
+                        // better than nothing
+                        // note this is actually unordered
+                        $scope.loginData = zmServers[Object.keys(zmServers)[0]];
+                        NVRDataModel.setLogin($scope.loginData);
+
+                        availableServers = Object.keys(NVRDataModel.getServerGroups());
+                        serverbuttons = [
                         {
-                            text: availableServers[servIter]
-                        });
-                        //console.log("ADDING : " + availableServers[servIter]);
+                            text: $translate.instant('kServerAdd') + "..."
+                        }];
+                        for (var servIter = 0; servIter < availableServers.length; servIter++)
+                        {
+                            serverbuttons.push(
+                            {
+                                text: availableServers[servIter]
+                            });
+                            //console.log("ADDING : " + availableServers[servIter]);
+                        }
+                        //console.log (">>>>>>>delete: server buttons " + JSON.stringify(serverbuttons));    
                     }
-                    //console.log (">>>>>>>delete: server buttons " + JSON.stringify(serverbuttons));
+                    else
+                    {
+                        NVRDataModel.displayBanner('error', [$translate.instant('kBannerCannotDeleteNeedOne')]);
+                    }
+                
 
                 }
-                else
-                {
-                    NVRDataModel.displayBanner('error', [$translate.instant('kBannerCannotDeleteNeedOne')]);
-                }
+
                 return true;
             }
 
@@ -614,9 +638,12 @@ angular.module('zmApp.controllers').controller('zmApp.LoginCtrl', ['$scope', '$r
         // lets logout
         NVRDataModel.debug("Logging out of current session...");
         $rootScope.authSession = "undefined";
+
+        
         $http(
             {
                 method: 'POST',
+                timeout:10000,
                 //withCredentials: true,
                 url: $scope.loginData.url + '/index.php',
                 headers:
@@ -711,7 +738,9 @@ angular.module('zmApp.controllers').controller('zmApp.LoginCtrl', ['$scope', '$r
                                                 $rootScope.zmPopup = SecuredPopups.show('alert',
                                                 {
                                                     title: $translate.instant('kLoginValidatedTitle'),
-                                                    template: loginStatus
+                                                    template: loginStatus,
+                                                    okText: $translate.instant('kButtonOk'),
+                                                    cancelText: $translate.instant('kButtonCancel'),
                                                 }).then(function(res)
                                                 {
 
@@ -736,7 +765,9 @@ angular.module('zmApp.controllers').controller('zmApp.LoginCtrl', ['$scope', '$r
                                                 $rootScope.zmPopup = SecuredPopups.show('alert',
                                                 {
                                                     title: $translate.instant('kLoginValidatedTitle'),
-                                                    template: loginStatus
+                                                    template: loginStatus,
+                                                    okText: $translate.instant('kButtonOk'),
+                                                    cancelText: $translate.instant('kButtonCancel'),
                                                 }).then(function(res)
                                                 {
 
@@ -744,6 +775,10 @@ angular.module('zmApp.controllers').controller('zmApp.LoginCtrl', ['$scope', '$r
                                                     NVRDataModel.debug("Force reloading monitors...");
 
                                                 });
+                                            }
+                                            else // make sure CGI error is always shown
+                                            {
+                                                NVRDataModel.displayBanner((status < 500)? 'error':'info', [loginStatus]);
                                             }
                                             NVRDataModel.debug("refreshing API version...");
                                             NVRDataModel.getAPIversion()
@@ -771,7 +806,9 @@ angular.module('zmApp.controllers').controller('zmApp.LoginCtrl', ['$scope', '$r
                             $rootScope.zmPopup = SecuredPopups.show('alert',
                             {
                                 title: $translate.instant('kLoginValidAPIFailedTitle'),
-                                template: $translate.instant('kBannerPleaseCheck')
+                                template: $translate.instant('kBannerPleaseCheck'),
+                                okText: $translate.instant('kButtonOk'),
+                                cancelText: $translate.instant('kButtonCancel'),
                             });
                         });
                 });

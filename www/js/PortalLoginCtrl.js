@@ -173,7 +173,7 @@ angular.module('zmApp.controllers').controller('zmApp.PortalLoginCtrl', ['$ionic
                                     return;
                                 }
 
-                                if (data == "0.0.0")
+                                /*if (data == "0.0.0")
                                 {
 
                                     NVRDataModel.log("2nd Auth:API getVersion succeeded but returned 0.0.0 " + JSON.stringify(data));
@@ -183,7 +183,7 @@ angular.module('zmApp.controllers').controller('zmApp.PortalLoginCtrl', ['$ionic
                                         "wizard": false
                                     });
                                     return;
-                                }
+                                }*/
                                 // coming here means continue
                                 EventServer.refresh();
 
@@ -214,6 +214,58 @@ angular.module('zmApp.controllers').controller('zmApp.PortalLoginCtrl', ['$ionic
         return (d.promise);
     }
 
+    function evaluateTappedNotification()
+    {
+        if ($rootScope.tappedNotification)
+        {
+
+            var ld = NVRDataModel.getLogin();
+            NVRDataModel.log("Came via push tap. onTapScreen=" + ld.onTapScreen);
+            //console.log ("***** NOTIFICATION TAPPED  ");
+            $rootScope.tappedNotification = 0;
+            $ionicHistory.nextViewOptions(
+            {
+                disableBack: true
+            });
+
+            if (ld.onTapScreen == $translate.instant('kTapMontage'))
+            {
+                NVRDataModel.debug("Going to montage");
+                $state.go("montage",
+                {},
+                {
+                    reload: true
+                });
+
+                return;
+            }
+            else if (ld.onTapScreen == $translate.instant('kTapEvents'))
+            {
+                NVRDataModel.debug("Going to events");
+                $state.go("events",
+                {
+                    "id": 0,
+                    "playEvent": false
+                },
+                {
+                    reload: true
+                });
+                return;
+            }
+            else // we go to live
+            {
+                NVRDataModel.debug("Going to live view ");
+                $state.go("monitors",
+                {},
+                {
+                    reload: true
+                });
+                return;
+            }
+        }
+
+    }
+
     function unlock(idVerified)
     {
         /*
@@ -235,8 +287,7 @@ angular.module('zmApp.controllers').controller('zmApp.PortalLoginCtrl', ['$ionic
                     {
                         NVRDataModel.debug("PortalLogin: auth success");
 
-                        NVRDataModel.getKeyConfigParams(1);
-                        NVRDataModel.getTimeZone();
+                        
                         // $state.go("login" ,{"wizard": false});
                         //login was ok, so get API details
                         NVRDataModel.getAPIversion()
@@ -267,7 +318,7 @@ angular.module('zmApp.controllers').controller('zmApp.PortalLoginCtrl', ['$ionic
                                         return;
                                     }
 
-                                    if (data == "0.0.0")
+                                    /*if (data == "0.0.0")
                                     {
 
                                         NVRDataModel.log("API getVersion succeeded but returned 0.0.0 " + JSON.stringify(data));
@@ -278,18 +329,28 @@ angular.module('zmApp.controllers').controller('zmApp.PortalLoginCtrl', ['$ionic
                                         });
                                         return;
 
-                                    }
+                                    }*/
                                     // coming here means continue
                                     // console.log (">>>>>>>>>>>>>>>>>>>>>>>>>NEVER");
+                                    
+                                    NVRDataModel.getKeyConfigParams(1);
+                                    NVRDataModel.getTimeZone();
                                     EventServer.refresh();
+                                    if ($rootScope.tappedNotification != 1)
+                                    {
+                                        console.log ("NOTIFICATION TAPPED INSIDE CHECK IS "+$rootScope.tappedNotification);
+                                        var statetoGo = $rootScope.lastState ? $rootScope.lastState : 'montage';
+                                        NVRDataModel.debug("logging state transition");
+                                        NVRDataModel.debug("Transitioning state to: " +
+                                            statetoGo + " with param " + JSON.stringify($rootScope.lastStateParam));
 
-                                    var statetoGo = $rootScope.lastState ? $rootScope.lastState : 'montage';
-                                    NVRDataModel.debug("logging state transition");
-                                    NVRDataModel.debug("Transitioning state to: " +
-                                        statetoGo + " with param " + JSON.stringify($rootScope.lastStateParam));
+                                        $state.go(statetoGo, $rootScope.lastStateParam);
+                                        return;
 
-                                    $state.go(statetoGo, $rootScope.lastStateParam);
-                                    return;
+                                    }
+                                    else
+                                        evaluateTappedNotification();
+                                    
 
                                 },
                                 function(error)
@@ -308,64 +369,30 @@ angular.module('zmApp.controllers').controller('zmApp.PortalLoginCtrl', ['$ionic
                                                 },
                                                 function error(e)
                                                 {
-                                                    $state.go("login",
+
+                                                    if ($rootScope.apiValid == true)
                                                     {
-                                                        "wizard": false
-                                                    });
+                                                        $state.go("login",
+                                                        {
+                                                            "wizard": false
+                                                        });
+                                                        return;
+                                                    }
+                                                    else
+                                                    {
+                                                        $state.go("invalidapi");
+                                                        return;
+                                                    }
+                                                        
                                                 });
+                                                    
                                         return;
 
                                     }, 1000);
 
                                 });
 
-                        if ($rootScope.tappedNotification)
-                        {
-
-                            var ld = NVRDataModel.getLogin();
-                            NVRDataModel.log("Came via push tap. onTapScreen=" + ld.onTapScreen);
-                            //console.log ("***** NOTIFICATION TAPPED  ");
-                            $rootScope.tappedNotification = 0;
-                            $ionicHistory.nextViewOptions(
-                            {
-                                disableBack: true
-                            });
-
-                            if (ld.onTapScreen == $translate.instant('kTapMontage'))
-                            {
-                                NVRDataModel.debug("Going to montage");
-                                $state.go("montage",
-                                {},
-                                {
-                                    reload: true
-                                });
-
-                                return;
-                            }
-                            else if (ld.onTapScreen == $translate.instant('kTapEvents'))
-                            {
-                                NVRDataModel.debug("Going to events");
-                                $state.go("events",
-                                {
-                                    "id": 0,
-                                    "playEvent": false
-                                },
-                                {
-                                    reload: true
-                                });
-                                return;
-                            }
-                            else // we go to live
-                            {
-                                NVRDataModel.debug("Going to live view ");
-                                $state.go("monitors",
-                                {},
-                                {
-                                    reload: true
-                                });
-                                return;
-                            }
-                        }
+                       
 
                     },
                     // coming here means auth error

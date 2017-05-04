@@ -27,13 +27,13 @@ else
 	echo "Directory platforms/android does not exist, skipping..."
 fi
 
-echo "Copying plist hack for iOS for non SSL connections"
-echo "--------------------------------------------------"
-if [ -d "platforms/ios/zmNinja" ]; then
-	exe cp www/external/zmNinja-Info.plist.IOS9nonSSLPatch platforms/ios/zmNinja/zmNinja-Info.plist
-else
-	echo "Directory platforms/ios/zmNinja does not exist, skipping..."
-fi
+#echo "Copying plist hack for iOS for non SSL connections"
+#echo "--------------------------------------------------"
+#if [ -d "platforms/ios/zmNinja" ]; then
+#	exe cp www/external/zmNinja-Info.plist.IOS9nonSSLPatch platforms/ios/zmNinja/zmNinja-Info.plist
+#else
+#	echo "Directory platforms/ios/zmNinja does not exist, skipping..."
+#fi
 
 echo "Copying Android notification icons to resource dir"
 echo "--------------------------------------------------"

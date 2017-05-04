@@ -11,6 +11,7 @@
     "@angular/platform-browser-dynamic": "^2.0.0-rc.3",
     "@angular/router": "^2.0.0-rc.2",
     "async": "^1.4.2",
+    "electron-window-state": "^4.0.2",
     "gulp": "^3.5.6",
     "gulp-concat": "^2.2.0",
     "gulp-minify-css": "^0.3.0",
@@ -36,13 +37,6 @@
       "id": "cordova-sqlite-storage"
     },
     "cordova-plugin-settings-hook",
-    {
-      "id": "phonegap-plugin-push",
-      "locator": "phonegap-plugin-push",
-      "variables": {
-        "SENDER_ID": "710936220256"
-      }
-    },
     "cordova-plugin-file",
     "cordova-plugin-compat",
     "cordova-plugin-inappbrowser",
@@ -90,12 +84,26 @@
       "locator": "https://github.com/pliablepixels/cordova-plugin-media",
       "id": "cordova-plugin-media"
     },
-    "cordova-plugin-photo-library",
     "cordova-plugin-add-swift-support",
     "cordova-plugin-file-transfer",
     {
       "locator": "https://github.com/FlyingDonkeyDev/cordova-library-helper",
       "id": "cordova-library-helper"
+    },
+    "cordova-plugin-photo-library",
+    {
+      "id": "cordova-plugin-customurlscheme",
+      "locator": "cordova-plugin-customurlscheme",
+      "variables": {
+        "URL_SCHEME": "zmninja"
+      }
+    },
+    {
+      "id": "phonegap-plugin-push",
+      "locator": "phonegap-plugin-push",
+      "variables": {
+        "SENDER_ID": "710936220256"
+      }
     },
     {
       "locator": "https://github.com/hypery2k/cordova-certificate-plugin",

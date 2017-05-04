@@ -45,7 +45,7 @@
             <div class="item item-text-wrap item-input-inset">
                 {{'kMaxMonitorsMontage' | translate }}&nbsp;
                 <label class="item-input-wrapper">
-                    <input type="tel" placeholder="be careful" ng-model="loginData.maxMontage">
+                    <input type="tel" placeholder="{{'kBeCareful' | translate}}" ng-model="loginData.maxMontage">
                 </label>
             </div>
             <!--
@@ -109,6 +109,31 @@
                     {{'kWarningLargeTimeline' | translate}}
                 </label>
             </div>
+
+            <label>
+                <ion-toggle ng-model="loginData.hideArchived" ng-checked="loginData.hideArchived" toggle-class="toggle-calm"><span class="item-text-wrap">{{'kHideArchived' | translate}}
+                   </span>
+                </ion-toggle>
+            </label>
+
+            <label ng-if="$root.platformOS!='desktop'">
+                <ion-toggle ng-model="loginData.enableStrictSSL" ng-checked="loginData.enableStrictSSL" toggle-class="toggle-calm"><span class="item-text-wrap">{{'kEnableStrictSSL' | translate}}
+                   </span>
+                </ion-toggle>
+            </label>
+
+            <label>
+                <ion-toggle ng-model="loginData.enableGIFMP4" ng-checked="loginData.enableGIFMP4" toggle-class="toggle-calm"><span class="item-text-wrap">{{'kEnableGIFMP4' | translate}}
+                   </span>
+                </ion-toggle>
+            </label>
+
+            <label>
+                <ion-toggle ng-model="loginData.enableSlowLoading" ng-checked="loginData.enableSlowLoading" toggle-class="toggle-calm"><span class="item-text-wrap">{{'kEnableSlowLoading' | translate}}
+                   </span>
+                </ion-toggle>
+            </label>
+
             <label>
                 <ion-toggle ng-model="loginData.disableAlarmCheckMontage" ng-checked="loginData.disableAlarmCheckMontage" toggle-class="toggle-calm"><span class="item-text-wrap">{{'kDisableAlarmMontage' | translate}}
                     <p>{{'kDisableAlarmMontageSub' | translate}}</p></span>

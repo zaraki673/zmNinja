@@ -25,7 +25,8 @@
         <!-- lets make sure the events list is not empty as collection repeat needs height -->
         <div ng-if="!eventsBeingLoaded">
             <ion-list show-delete="eventList.showDelete">
-                <ion-item collection-repeat="event in events| filter:search.text" item-height="event.Event.height" id="item-{{$index}}">
+                <ion-item collection-repeat="event in events| filter:search.text |  eventListFilter
+                " item-height="event.Event.height" id="item-{{$index}}" on-swipe-left="checkSwipe($index);">
                     <span style="float:left;margin-top:-18px;background-color:#96281B;color:#fff;font-size:11px;opacity:0.7;border-radius: 0px 0px 5px 5px;">&nbsp;&nbsp;&nbsp;<i class="ion-calendar"></i>&nbsp;&nbsp;{{prettifyTime(event.Event.StartTime)}}&nbsp;{{tzAbbr}}&nbsp;</span>&nbsp;&nbsp;
                     <span style="float:left;margin-top:-18px;background-color:#fff;color:#888;font-size:11px;opacity:1;">&nbsp;&nbsp;<i class="ion-arrow-right-b"></i>&nbsp;{{event.Event.humanizeTime}} <span ng-if="!event.Event.EndTime">(<span translate="kRecordingProgress"></span>)</span>
                     </span>
@@ -63,29 +64,35 @@
                         <div class="col col-80">
                             <div class="item-text-wrap">
                                 
-                                <b>{{event.Event.MonitorName}}</b> ({{event.Event.Id}}) &nbsp;
-                                <button ng-if="gifshotSupported" class="button button-small button-clear icon gif-icon" ng-click="permissionsDownload(event)"> 
+                                <b><i ng-if="event.Event.Archived=='1'" class="ion-ios-flag" style="color:red">&nbsp;</i>{{event.Event.MonitorName}}</b> ({{event.Event.Id}}) &nbsp;
+                                <button ng-if="gifshotSupported && loginData.enableGIFMP4 " class="button button-small button-clear icon gif-icon" ng-click="permissionsDownload(event)"> 
                             </button>
 
                           
 
-                            <a ng-if="(event.Event.DefaultVideo!='' && event.Event.DefaultVideo!==undefined) && $root.platformOS=='desktop' " class="button button-clear button-small icon mp4-icon" href="{{event.Event.videoPath}}" download="{{event.Event.Id}}-video.mp4" ng-click="mp4warning()"></a>
+                            <a ng-if="(event.Event.DefaultVideo!='' && event.Event.DefaultVideo!==undefined) && $root.platformOS=='desktop' && loginData.enableGIFMP4 " class="button button-clear button-small icon mp4-icon" href="{{event.Event.videoPath}}" download="{{event.Event.Id}}-video.mp4" ng-click="mp4warning()"></a>
 
-                             <button ng-if="event.Event.DefaultVideo!='' && event.Event.DefaultVideo!=undefined && $root.platformOS!='desktop'" class="button button-small button-clear icon mp4-icon" ng-click="downloadFileToDevice(event.Event.videoPath, event.Event.Id)"> 
+                             <button ng-if="event.Event.DefaultVideo!='' && event.Event.DefaultVideo!=undefined && $root.platformOS!='desktop' && loginData.enableGIFMP4 " class="button button-small button-clear icon mp4-icon" ng-click="downloadFileToDevice(event.Event.videoPath, event.Event.Id)"> 
                             </button>
 
 
                             </div>
+
                             <i class="ion-images"></i> {{event.Event.Frames}} &nbsp;
                             <i class="ion-ios-bell-outline"></i> {{event.Event.AlarmFrames}} &nbsp;
                             <i class="ion-arrow-graph-up-right"></i> {{event.Event.TotScore}}
+
+                            
                         </div>
                     </div>
                     <!--row-->
                     <div class="row" style="font-size:80%; color:rgb(110,110,110)">
-                        <div class="item-text-wrap"><i class="ion-calendar"></i>&nbsp; {{prettify(event.Event.StartTime)}}&nbsp;{{tzAbbr}}&nbsp;
+                        <div class="item-text-wrap">
+                        <i class="ion-ios-pricetags-outline"></i>&nbsp; {{event.Event.Name}}<br/>
+                        <i class="ion-calendar"></i>&nbsp; {{prettify(event.Event.StartTime)}}&nbsp;{{tzAbbr}}&nbsp;
                             <br/>
                             <i class="ion-clipboard"></i>&nbsp; {{event.Event.Notes}}
+
                             <!-- <br/> Default video:{{event.Event.relativePath}}{{event.Event.DefaultVideo}}-->
                         </div>
                     </div>
@@ -119,18 +126,27 @@
                         <button ng-click="toggleTypeOfAlarms()" class="button button-small button-assertive button-outline">
                             <span translate="kType"></span>:{{typeOfFrames}}
                         </button>
+                        <button 
+                         ng-click="toggleMotionOutline()" class="button button-small button-assertive button-outline">
+                            <span translate="kOutlineMotion"></span>:{{outlineMotion}}
+                        </button>
                     </p>
-                    <ion-scroll direction="x" overflow-scroll="false">
+                    
+                   
+                    <ion-scroll direction="x" overflow-scroll="false" >
                         <span ng-repeat="alarm in alarm_images | selectFrames: typeOfFrames">
                                                  
                                             <figure  class = "animated slideInLeft" style="display:inline-block">
                                                 <!--{{event.Event.baseURL}} p:{{event.Event.imageMode}}-->
                                                 <figcaption class="smallnote"><span translate="kFrame"></span>:{{alarm.frameid}},<span translate="kScore"></span>:{{alarm.score}}, <span translate="kTime"></span>: {{prettifyTimeSec(alarm.time)}}</figcaption>
-                        <img ng-if="event.Event.imageMode=='path'" image-spinner-src="{{event.Event.baseURL}}/index.php?view=image&path={{event.Event.relativePath}}{{alarm.fname}}&height=380" style="width: auto; height: auto;max-width: 100%;max-height: 170px" on-tap="showImage(event.Event.baseURL,event.Event.relativePath,alarm.fname, alarm.frameid, event.Event.Id, event.Event.imageMode, alarm.id, alarm_images, $index)" />
-                        <img ng-if="event.Event.imageMode=='fid'" image-spinner-src="{{event.Event.baseURL}}/index.php?view=image&fid={{alarm.id}}" style="width: auto; height: auto;max-width: 100%;max-height: 170px" on-tap="showImage(event.Event.baseURL,event.Event.relativePath,alarm.fname, alarm.frameid, event.Event.Id, event.Event.imageMode, alarm.id, alarm_images, $index)" />
+                        <img ng-if="event.Event.imageMode=='path'" ng-src="{{event.Event.baseURL}}/index.php?view=image&path={{event.Event.relativePath}}{{outlineMotion? alarm.aname:alarm.fname}}&height=380" fallback-src="{{event.Event.baseURL}}/index.php?view=image&path={{event.Event.relativePath}}{{alarm.fname}}&height=380"" style="width: auto; height: auto;max-width: 100%;max-height: 170px" on-tap="showImage(event.Event.baseURL,event.Event.relativePath,alarm.fname, alarm.frameid, event.Event.Id, event.Event.imageMode, alarm.id, alarm_images, $index)" />
+
+                        <img ng-if="event.Event.imageMode=='fid'" ng-src="{{event.Event.baseURL}}/index.php?view=image&fid={{alarm.id}}{{outlineMotionParam}}" fallback-src="{{event.Event.baseURL}}/index.php?view=image&fid={{alarm.id}}" style="width: auto; height: auto;max-width: 100%;max-height: 170px" on-tap="showImage(event.Event.baseURL,event.Event.relativePath,alarm.fname, alarm.frameid, event.Event.Id, event.Event.imageMode, alarm.id, alarm_images, $index)" />
                         </figure>
                         </span>
                     </ion-scroll>
+
+                 
                 </div>
             </div>
             <div ng-if="groupType=='scrub'">
@@ -184,6 +200,19 @@
         <!-- isGroupShown -->
         <ion-delete-button class="ion-minus-circled" ng-click="deleteEvent(event.Event.Id, $index)">
             </ion-delete-button>
+
+    
+        <ion-option-button  ng-if="event.Event.Archived == 1" class="button-balanced" ng-click= "archiveUnarchiveEvent($index,event.Event.Id)">{{'kUnflag' | translate}}</ion-option-button>
+
+        <ion-option-button ng-if="event.Event.Archived == 0" class="button-assertive" ng-click="archiveUnarchiveEvent($index, event.Event.Id)" >{{'kFlag' | translate}}</ion-option-button>
+      
+            
+             <!-- hack to make sure swipe left displays well
+             if there is no content and our list height is set
+             to a larger height, the swipe display acts weird -->
+             
+             <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+
             </ion-item>
             </ion-list>
             </div>
@@ -198,6 +227,9 @@
                 </ion-infinite-scroll>
             </div>
             <canvas id="canvas" class="hiddengifcanvas"></canvas>
+
+
+
     </ion-content>
     <div class="events-float-filter" ng-if="isEventFilterOn" on-tap="filterTapped();"><span translate="kFilterOn"></span></div>
     <div class="bwmode" ng-if="$root.runMode=='lowbw'">

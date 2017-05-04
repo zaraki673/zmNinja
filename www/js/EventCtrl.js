@@ -37,7 +37,7 @@ angular.module('zmApp.controllers')
 
 })
 
-.controller('zmApp.EventCtrl', ['$scope', '$rootScope', 'zm', 'NVRDataModel', 'message', '$ionicSideMenuDelegate', '$timeout', '$interval', '$ionicModal', '$ionicLoading', '$http', '$state', '$stateParams', '$ionicHistory', '$ionicScrollDelegate', '$ionicPlatform', '$ionicSlideBoxDelegate', '$ionicPosition', '$ionicPopover', '$ionicPopup', 'EventServer', '$sce', '$cordovaBadge', '$cordovaLocalNotification', '$q', 'carouselUtils', '$translate', '$cordovaFileTransfer', '$cordovaFile', function($scope, $rootScope, zm, NVRDataModel, message, $ionicSideMenuDelegate, $timeout, $interval, $ionicModal, $ionicLoading, $http, $state, $stateParams, $ionicHistory, $ionicScrollDelegate, $ionicPlatform, $ionicSlideBoxDelegate, $ionicPosition, $ionicPopover, $ionicPopup, EventServer, $sce, $cordovaBadge, $cordovaLocalNotification, $q, carouselUtils, $translate, $cordovaFileTransfer, $cordovaFile)
+.controller('zmApp.EventCtrl', ['$scope', '$rootScope', 'zm', 'NVRDataModel', 'message', '$ionicSideMenuDelegate', '$timeout', '$interval', '$ionicModal', '$ionicLoading', '$http', '$state', '$stateParams', '$ionicHistory', '$ionicScrollDelegate', '$ionicPlatform', '$ionicSlideBoxDelegate', '$ionicPosition', '$ionicPopover', '$ionicPopup', 'EventServer', '$sce', '$cordovaBadge', '$cordovaLocalNotification', '$q', 'carouselUtils', '$translate', '$cordovaFileTransfer', '$cordovaFile', '$ionicListDelegate',function($scope, $rootScope, zm, NVRDataModel, message, $ionicSideMenuDelegate, $timeout, $interval, $ionicModal, $ionicLoading, $http, $state, $stateParams, $ionicHistory, $ionicScrollDelegate, $ionicPlatform, $ionicSlideBoxDelegate, $ionicPosition, $ionicPopover, $ionicPopup, EventServer, $sce, $cordovaBadge, $cordovaLocalNotification, $q, carouselUtils, $translate, $cordovaFileTransfer, $cordovaFile, $ionicListDelegate)
 {
 
     // events in last 5 minutes
@@ -63,6 +63,8 @@ angular.module('zmApp.controllers')
     var nolangTo;
 
     $scope.typeOfFrames = $translate.instant('kShowTimeDiffFrames');
+    $scope.outlineMotion = false;
+    $scope.outlineMotionParam = "";
     var eventsListScrubHeight = eventsListScrubHeight;
     var eventsListDetailsHeight = eventsListDetailsHeight;
 
@@ -86,6 +88,9 @@ angular.module('zmApp.controllers')
     $scope.$on('$ionicView.afterEnter', function()
     {
         //console.log ("********* AFTER ENTER");
+        //
+        $ionicListDelegate.canSwipeItems(true);
+        NVRDataModel.debug ("enabling options swipe");
 
         // see if we come from monitors, if so, don't filter events
         if ($ionicHistory.backTitle() == 'Monitors')
@@ -306,7 +311,9 @@ angular.module('zmApp.controllers')
             $ionicPopup.alert(
             {
                 title: pTitle,
-                template: "{{'kCheckCredentials' | translate }}"
+                template: "{{'kCheckCredentials' | translate }}",
+                okText: $translate.instant('kButtonOk'),
+                cancelText: $translate.instant('kButtonCancel'),
             });
             $ionicHistory.nextViewOptions(
             {
@@ -762,7 +769,9 @@ angular.module('zmApp.controllers')
         $ionicPopup.alert(
         {
             title: $translate.instant('kNote'),
-            template: "{{'kVideoMp4Warning' | translate }}"
+            template: "{{'kVideoMp4Warning' | translate }}",
+            okText: $translate.instant('kButtonOk'),
+            cancelText: $translate.instant('kButtonCancel'),
         });
     };
 
@@ -804,11 +813,18 @@ angular.module('zmApp.controllers')
         // console.log ("parray :  " + JSON.stringify(parray));
         // console.log ("index: " + ndx);
         if ($scope.imode == 'path')
+        {
+            if ($scope.outlineMotion)
+                $scope.imgsrc = p + "/index.php?view=image&path=" + r + $scope.parray[$scope.ndx].aname;
+            else
+                $scope.imgsrc = p + "/index.php?view=image&path=" + r + $scope.parray[$scope.ndx].fname;
+            $scope.fallbackImgSrc = p + "/index.php?view=image&path=" + r + $scope.parray[$scope.ndx].fname;
+        }
 
-            $scope.imgsrc = p + "/index.php?view=image&path=" + r + $scope.parray[$scope.ndx].fname;
         else
         {
-            $scope.imgsrc = p + "/index.php?view=image&fid=" + $scope.parray[$scope.ndx].id;
+            $scope.imgsrc = p + "/index.php?view=image&fid=" + $scope.parray[$scope.ndx].id+$scope.outlineMotionParam;
+            $scope.fallbackImgSrc = p + "/index.php?view=image&fid=" + $scope.parray[$scope.ndx].id;
 
         }
 
@@ -816,7 +832,7 @@ angular.module('zmApp.controllers')
 
         $rootScope.zmPopup = $ionicPopup.show(
         {
-            template: '<center>' + $translate.instant('kFrame') + ':{{parray[ndx].frameid}}@{{prettifyTimeSec(parray[ndx].time)}}</center><br/><img src="{{imgsrc}}" width="100%"  />',
+            template: '<center>' + $translate.instant('kFrame') + ':{{parray[ndx].frameid}}@{{prettifyTimeSec(parray[ndx].time)}}</center><br/><img ng-src="{{imgsrc}}" fallback-src="{{fallbackImgSrc}}" width="100%"  />',
             title: $translate.instant('kImages') + " (" + $translate.instant($scope.typeOfFrames) + ")",
             subTitle: 'use left and right arrows to change',
             scope: $scope,
@@ -857,15 +873,22 @@ angular.module('zmApp.controllers')
                         if (nndx == null) nndx = $scope.ndx;
                         $scope.ndx = nndx;
 
-                        if ($scope.imode == 'path')
-                        {
+                       if ($scope.imode == 'path')
+                              {
+                                  if ($scope.outlineMotion)
+                                      $scope.imgsrc = p + "/index.php?view=image&path=" + r + $scope.parray[$scope.ndx].aname;
+                                  else
+                                      $scope.imgsrc = p + "/index.php?view=image&path=" + r + $scope.parray[$scope.ndx].fname;
+                                  $scope.fallbackImgSrc = p + "/index.php?view=image&path=" + r + $scope.parray[$scope.ndx].fname;
+                              }
 
-                            $scope.imgsrc = p + "/index.php?view=image&path=" + r + $scope.parray[$scope.ndx].fname;
-                        }
-                        else
-                        {
-                            $scope.imgsrc = p + "/index.php?view=image&fid=" + $scope.parray[$scope.ndx].id;
-                        }
+                              else
+                              {
+                                  $scope.imgsrc = p + "/index.php?view=image&fid=" + $scope.parray[$scope.ndx].id+$scope.outlineMotionParam;
+                                  $scope.fallbackImgSrc = p + "/index.php?view=image&fid=" + $scope.parray[$scope.ndx].id;
+
+                              }
+
 
                         e.preventDefault();
 
@@ -897,14 +920,21 @@ angular.module('zmApp.controllers')
                         $scope.ndx = nndx;
 
                         if ($scope.imode == 'path')
-                        {
+                               {
+                                   if ($scope.outlineMotion)
+                                       $scope.imgsrc = p + "/index.php?view=image&path=" + r + $scope.parray[$scope.ndx].aname;
+                                   else
+                                       $scope.imgsrc = p + "/index.php?view=image&path=" + r + $scope.parray[$scope.ndx].fname;
+                                   $scope.fallbackImgSrc = p + "/index.php?view=image&path=" + r + $scope.parray[$scope.ndx].fname;
+                               }
 
-                            $scope.imgsrc = p + "/index.php?view=image&path=" + r + $scope.parray[$scope.ndx].fname;
-                        }
-                        else
-                        {
-                            $scope.imgsrc = p + "/index.php?view=image&fid=" + $scope.parray[$scope.ndx].id;
-                        }
+                               else
+                               {
+                                   $scope.imgsrc = p + "/index.php?view=image&fid=" + $scope.parray[$scope.ndx].id+$scope.outlineMotionParam;
+                                   $scope.fallbackImgSrc = p + "/index.php?view=image&fid=" + $scope.parray[$scope.ndx].id;
+
+                               }
+
 
                         e.preventDefault();
 
@@ -921,6 +951,17 @@ angular.module('zmApp.controllers')
             ]
         });
 
+    };
+
+    
+
+    $scope.toggleMotionOutline = function()
+    {
+        $scope.outlineMotion = !$scope.outlineMotion;
+        if ($scope.outlineMotion)
+            $scope.outlineMotionParam =  "&show=analyse";
+        else
+            $scope.outlineMotionParam = "";
     };
 
     $scope.toggleTypeOfAlarms = function()
@@ -1183,7 +1224,9 @@ angular.module('zmApp.controllers')
             $ionicPopup.confirm(
             {
                 title: $translate.instant('kNote'),
-                template: "{{'kGifWarning' | translate }}"
+                template: "{{'kGifWarning' | translate }}",
+                okText: $translate.instant('kButtonOk'),
+                cancelText: $translate.instant('kButtonCancel'),
             }).then(function(res)
             {
                 if (res)
@@ -1550,6 +1593,94 @@ angular.module('zmApp.controllers')
             );
     }
 
+    $scope.archiveUnarchiveEvent = function (ndx,eid)
+    {
+        //https://server/zm/api/events/11902.json -XPUT -d"Event[Archived]=1"
+        //
+        $ionicListDelegate.closeOptionButtons();
+
+        NVRDataModel.debug ("Archiving request for EID="+eid);
+        var loginData = NVRDataModel.getLogin();
+        var apiArchive = loginData.apiurl + "/events/" + eid + ".json";
+        var setArchiveBit = ($scope.events[ndx].Event.Archived == '0') ? "1":"0";
+
+        NVRDataModel.debug ("Calling archive with:"+apiArchive+ " and Archive="+setArchiveBit);
+        //put(url, data, [config]);
+
+       // $http.put(apiArchive,"Event[Archived]="+setArchiveBit)
+       // 
+       $ionicLoading.show(
+        {
+            template: "{{'kPleaseWait' | translate}}...",
+            noBackdrop: true,
+            duration: zm.httpTimeout
+        });
+
+        $http({
+
+                method: 'POST',
+                headers:
+                {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Accept': '*/*',
+                },
+                transformRequest: function(obj)
+                {
+                    var str = [];
+                    for (var p in obj)
+                        str.push(encodeURIComponent(p) + "=" +
+                            encodeURIComponent(obj[p]));
+                    var foo = str.join("&");
+                    // console.log("****RETURNING " + foo);
+                    NVRDataModel.debug("MonitorCtrl: parmeters constructed: " + foo);
+                    return foo;
+                },
+                url: apiArchive,
+                data: {
+                    "Event[Archived]":setArchiveBit
+
+                }
+            })
+        .then (function (success) {
+
+             NVRDataModel.log ("archiving response: "+ JSON.stringify(success));
+             if (success.data.message == 'Error')
+             {
+                $ionicLoading.show(
+                 {
+                     template: "{{'kError' | translate}}...",
+                     noBackdrop: true,
+                     duration: 1500
+                 });
+
+             }
+             else
+             {
+
+
+                $ionicLoading.show(
+                 {
+                     template: "{{'kSuccess' | translate}}...",
+                     noBackdrop: true,
+                     duration: 1000
+                 });
+                if ($scope.events[ndx].Event.Archived == '0')
+                    $scope.events[ndx].Event.Archived = '1';
+                else
+                    $scope.events[ndx].Event.Archived = '0';    
+             }
+
+            
+
+        },
+        function (error) {
+            NVRDataModel.log ("Error archiving: "+ JSON.stringify(error));
+        } );
+            
+        
+
+    };
+
     //--------------------------------------------------------------------------
     // Takes care of deleting individual events
     //--------------------------------------------------------------------------
@@ -1570,14 +1701,43 @@ angular.module('zmApp.controllers')
             duration: zm.httpTimeout
         });
 
+
+
         $http.delete(apiDelete)
             .success(function(data)
             {
                 $ionicLoading.hide();
-                NVRDataModel.debug("delete success: " + JSON.stringify(data));
-                NVRDataModel.displayBanner('info', [$translate.instant('kDeleteEventSuccess')], 2000, 2000);
+                NVRDataModel.debug("delete output: " + JSON.stringify(data));
 
-                $scope.events.splice(itemid, 1);
+                if (data.message == 'Error')
+                {
+                   $ionicLoading.show(
+                    {
+                        template: "{{'kError' | translate}}...",
+                        noBackdrop: true,
+                        duration: 1500
+                    });
+
+                }
+                else
+                {
+
+
+                   $ionicLoading.show(
+                    {
+                        template: "{{'kSuccess' | translate}}...",
+                        noBackdrop: true,
+                        duration: 1000
+                    });
+                   $scope.events.splice(itemid, 1);
+                   
+                }
+
+               // NVRDataModel.displayBanner('info', [$translate.instant('kDeleteEventSuccess')], 2000, 2000);
+
+                
+
+
                 //doRefresh();
 
             })
@@ -1603,7 +1763,9 @@ angular.module('zmApp.controllers')
         $rootScope.zmPopup = $ionicPopup.confirm(
         {
             title: $translate.instant('kFilterSettings'),
-            template: $translate.instant('kFilterEventsBetween1') + ':<br/> <b>' + myFrom + "</b> " + $translate.instant('kTo') + " <b>" + toString + '</b><br/>' + $translate.instant('kFilterEventsBetween2')
+            template: $translate.instant('kFilterEventsBetween1') + ':<br/> <b>' + myFrom + "</b> " + $translate.instant('kTo') + " <b>" + toString + '</b><br/>' + $translate.instant('kFilterEventsBetween2'),
+            okText: $translate.instant('kButtonOk'),
+            cancelText: $translate.instant('kButtonCancel'),
         });
         $rootScope.zmPopup.then(function(res)
         {
@@ -1882,6 +2044,21 @@ angular.module('zmApp.controllers')
         $ionicSlideBoxDelegate.$getByHandle("eventSlideBox").enableSlide(false);
     };
 
+    $scope.checkSwipe = function (ndx)
+    {
+        if ($scope.events[ndx].Event.ShowScrub)
+        {
+            $ionicListDelegate.canSwipeItems(false);
+            NVRDataModel.debug ("disabling options swipe");
+        }
+        else
+        {
+          $ionicListDelegate.canSwipeItems(true);
+          NVRDataModel.debug ("enabling options swipe");   
+        }
+            
+    };
+
     //-------------------------------------------------------------------------
     // This function is called when a user enables or disables
     // scrub view for an event.
@@ -1901,6 +2078,7 @@ angular.module('zmApp.controllers')
 
     function toggleGroup(event, ndx, frames, groupType)
     {
+        
 
         // If we are here and there is a record of a previous scroll
         // then we need to scroll back to hide that view
@@ -1920,15 +2098,37 @@ angular.module('zmApp.controllers')
         }
 
         event.Event.ShowScrub = !event.Event.ShowScrub;
+
+        if (event.Event.ShowScrub == false)
+        {
+            $ionicListDelegate.canSwipeItems(true);
+            NVRDataModel.debug ("enabling options swipe due to toggle");
+        }
+
+        else
+        {
+            $ionicListDelegate.canSwipeItems(false);
+            $ionicListDelegate.closeOptionButtons();
+            NVRDataModel.debug ("disabling options swipe due to toggle");
+
+        }
+
+
+
+
+        //console.log ("SCRUBBING IS "+event.Event.ShowScrub);
         // $ionicScrollDelegate.resize();
 
         //console.log ("GROUP TYPE IS " + groupType);
 
         if (event.Event.ShowScrub == true) // turn on display now
         {
+        
 
             if (groupType == 'alarms')
             {
+               // $ionicListDelegate.canSwipeItems(false);
+                //NVRDataModel.debug ("Disabling flag swipe as alarms are swipable");
                 $scope.alarm_images = [];
                 event.Event.height = (eventsListDetailsHeight + eventsListScrubHeight);
                 $ionicScrollDelegate.resize();
@@ -1967,6 +2167,7 @@ angular.module('zmApp.controllers')
                                     frameid: data.event.Frame[i].FrameId,
                                     score: data.event.Frame[i].Score,
                                     fname: padToN(data.event.Frame[i].FrameId, eventImageDigits) + "-capture.jpg",
+                                    aname:padToN(data.event.Frame[i].FrameId, eventImageDigits) + "-analyse.jpg",
                                     time: data.event.Frame[i].TimeStamp
                                 });
                                 timestamp = data.event.Frame[i].TimeStamp;
@@ -2188,6 +2389,10 @@ angular.module('zmApp.controllers')
         else
         {
             // $ionicScrollDelegate.freezeScroll(false);
+            // 
+           // $ionicListDelegate.canSwipeItems(true);
+            // NVRDataModel.debug ("enabling options swipe");
+
             $ionicSideMenuDelegate.canDragContent(true);
             event.Event.height = eventsListDetailsHeight;
             $ionicScrollDelegate.resize();

@@ -1,5 +1,236 @@
 # Change Log
 
+## [v1.2.41](https://github.com/pliablepixels/zmNinja/tree/v1.2.41) (2017-04-11)
+[Full Changelog](https://github.com/pliablepixels/zmNinja/compare/v1.2.40...v1.2.41)
+
+**Implemented enhancements:**
+
+- Implement concept of 'default profile' & 'workspace' in Montage [\#509](https://github.com/pliablepixels/zmNinja/issues/509)
+- Allow for montage scaling at increments of 5% \(currently 10%\) [\#505](https://github.com/pliablepixels/zmNinja/issues/505)
+- In monitor list \(Montage screen\) make the color of disabled monitors more prominent [\#503](https://github.com/pliablepixels/zmNinja/issues/503)
+
+**Fixed bugs:**
+
+- Montage profile showing new monitors automatically [\#504](https://github.com/pliablepixels/zmNinja/issues/504)
+- Video playback \(h264\) breaks on iOS with a config.xml setting [\#501](https://github.com/pliablepixels/zmNinja/issues/501)
+
+**Closed issues:**
+
+- Add support for manual disable/enable alarms [\#507](https://github.com/pliablepixels/zmNinja/issues/507)
+- When zoneminder is in contineous record mode zmNinja shows no events [\#502](https://github.com/pliablepixels/zmNinja/issues/502)
+- 2 Monitors - But only only one show up in "Event List" [\#500](https://github.com/pliablepixels/zmNinja/issues/500)
+- Google independent zmNinja via F-Droid  or downloadable packages \(apk\) [\#498](https://github.com/pliablepixels/zmNinja/issues/498)
+- iOS app frozen after being in background [\#482](https://github.com/pliablepixels/zmNinja/issues/482)
+
+**Merged pull requests:**
+
+- montage profile save - show existing list too [\#511](https://github.com/pliablepixels/zmNinja/pull/511) ([maymaymay](https://github.com/maymaymay))
+-  \#509 - default profile for all monitors and "workspace" [\#510](https://github.com/pliablepixels/zmNinja/pull/510) ([maymaymay](https://github.com/maymaymay))
+
+## [v1.2.40](https://github.com/pliablepixels/zmNinja/tree/v1.2.40) (2017-03-19)
+[Full Changelog](https://github.com/pliablepixels/zmNinja/compare/v1.2.39...v1.2.40)
+
+**Fixed bugs:**
+
+- Problem with notifications. [\#468](https://github.com/pliablepixels/zmNinja/issues/468)
+- Login denied for user "" when not using ZM authentication [\#459](https://github.com/pliablepixels/zmNinja/issues/459)
+
+**Closed issues:**
+
+- Timezone incorrect [\#492](https://github.com/pliablepixels/zmNinja/issues/492)
+
+**Merged pull requests:**
+
+- Update locale-de.json [\#497](https://github.com/pliablepixels/zmNinja/pull/497) ([florie1706](https://github.com/florie1706))
+- Update locale-fr 1.2.39 [\#495](https://github.com/pliablepixels/zmNinja/pull/495) ([cryptage21](https://github.com/cryptage21))
+- Buttons in this view were the wrong way around [\#494](https://github.com/pliablepixels/zmNinja/pull/494) ([florie1706](https://github.com/florie1706))
+- Change languages to their mother tongue [\#493](https://github.com/pliablepixels/zmNinja/pull/493) ([florie1706](https://github.com/florie1706))
+
+## [v1.2.39](https://github.com/pliablepixels/zmNinja/tree/v1.2.39) (2017-03-04)
+[Full Changelog](https://github.com/pliablepixels/zmNinja/compare/v1.2.38...v1.2.39)
+
+**Implemented enhancements:**
+
+- French Translation [\#469](https://github.com/pliablepixels/zmNinja/issues/469)
+- New language: German [\#466](https://github.com/pliablepixels/zmNinja/issues/466)
+
+**Fixed bugs:**
+
+- \(timeout\) "Zoneminder Authentication Failed" even though Zoneminder's logs says authentication was successful [\#487](https://github.com/pliablepixels/zmNinja/issues/487)
+- Can't get out of fullscreen mode \(confirmed on win64\) [\#473](https://github.com/pliablepixels/zmNinja/issues/473)
+
+**Closed issues:**
+
+- Update source build to use new versions of Cordova/Ionic [\#491](https://github.com/pliablepixels/zmNinja/issues/491)
+- Launch zmNinja via iOS app URL scheme [\#467](https://github.com/pliablepixels/zmNinja/issues/467)
+- zmNinja complied from sources for Android and push notification [\#464](https://github.com/pliablepixels/zmNinja/issues/464)
+- \[Desktop/Windows\]Window placement and size is not preserved across multiple sessions. [\#462](https://github.com/pliablepixels/zmNinja/issues/462)
+- Cycle Montage [\#460](https://github.com/pliablepixels/zmNinja/issues/460)
+- view streaming video inside ionic with iOS 10.2.1? [\#458](https://github.com/pliablepixels/zmNinja/issues/458)
+- missing event only shown with Filters [\#445](https://github.com/pliablepixels/zmNinja/issues/445)
+- FAB action buttons are confusing [\#204](https://github.com/pliablepixels/zmNinja/issues/204)
+
+**Merged pull requests:**
+
+- \#487 - devoption added to increase HTTP timeouts [\#490](https://github.com/pliablepixels/zmNinja/pull/490) ([florie1706](https://github.com/florie1706))
+- \#487 - devoption added to increase HTTP timeouts [\#489](https://github.com/pliablepixels/zmNinja/pull/489) ([cryptage21](https://github.com/cryptage21))
+-  \#487 - devoption added to increase HTTP timeouts [\#488](https://github.com/pliablepixels/zmNinja/pull/488) ([maymaymay](https://github.com/maymaymay))
+- Fixes for some bad German translations [\#486](https://github.com/pliablepixels/zmNinja/pull/486) ([florie1706](https://github.com/florie1706))
+- zmNinja removed from translation [\#485](https://github.com/pliablepixels/zmNinja/pull/485) ([florie1706](https://github.com/florie1706))
+- clarified menu option [\#481](https://github.com/pliablepixels/zmNinja/pull/481) ([florie1706](https://github.com/florie1706))
+- clarified menu option [\#480](https://github.com/pliablepixels/zmNinja/pull/480) ([maymaymay](https://github.com/maymaymay))
+- French Language - Update 1 [\#479](https://github.com/pliablepixels/zmNinja/pull/479) ([cryptage21](https://github.com/cryptage21))
+- Update locale-de.json [\#478](https://github.com/pliablepixels/zmNinja/pull/478) ([florie1706](https://github.com/florie1706))
+- more fixes [\#474](https://github.com/pliablepixels/zmNinja/pull/474) ([florie1706](https://github.com/florie1706))
+- Fixed some translations for a better understanding [\#472](https://github.com/pliablepixels/zmNinja/pull/472) ([florie1706](https://github.com/florie1706))
+- wrong wording [\#471](https://github.com/pliablepixels/zmNinja/pull/471) ([florie1706](https://github.com/florie1706))
+- fixed some typos [\#470](https://github.com/pliablepixels/zmNinja/pull/470) ([florie1706](https://github.com/florie1706))
+- Create locale-de.json [\#465](https://github.com/pliablepixels/zmNinja/pull/465) ([florie1706](https://github.com/florie1706))
+- spanish update [\#463](https://github.com/pliablepixels/zmNinja/pull/463) ([fxrnando](https://github.com/fxrnando))
+- android and iOS ports now allow for strict SSL checks... [\#461](https://github.com/pliablepixels/zmNinja/pull/461) ([maymaymay](https://github.com/maymaymay))
+
+## [v1.2.38](https://github.com/pliablepixels/zmNinja/tree/v1.2.38) (2017-02-17)
+[Full Changelog](https://github.com/pliablepixels/zmNinja/compare/v1.2.37...v1.2.38)
+
+**Implemented enhancements:**
+
+- SSL - add an option that either requires self signed certs installed on phones or will only work with real certs [\#455](https://github.com/pliablepixels/zmNinja/issues/455)
+- Allow users to hide MP4/GIF buttons [\#454](https://github.com/pliablepixels/zmNinja/issues/454)
+- make MP4 playback speed configurable \(and persistent\) [\#453](https://github.com/pliablepixels/zmNinja/issues/453)
+
+**Merged pull requests:**
+
+- let's make GIF and MP4 an option in Dev Settings \#454 [\#456](https://github.com/pliablepixels/zmNinja/pull/456) ([maymaymay](https://github.com/maymaymay))
+
+## [v1.2.37](https://github.com/pliablepixels/zmNinja/tree/v1.2.37) (2017-02-11)
+[Full Changelog](https://github.com/pliablepixels/zmNinja/compare/v1.2.36...v1.2.37)
+
+**Implemented enhancements:**
+
+- Add ability to view server logs [\#452](https://github.com/pliablepixels/zmNinja/issues/452)
+- Add ability to reflow montage without resetting size [\#448](https://github.com/pliablepixels/zmNinja/issues/448)
+
+**Fixed bugs:**
+
+- wizard often does not detect cgi-bin [\#451](https://github.com/pliablepixels/zmNinja/issues/451)
+- fs command line option not working [\#450](https://github.com/pliablepixels/zmNinja/issues/450)
+
+**Closed issues:**
+
+- Montage Image Scale not Saving on Win x64 [\#447](https://github.com/pliablepixels/zmNinja/issues/447)
+- Side menu scroll feature locks after switching servers OR displaying liveview in landscape [\#337](https://github.com/pliablepixels/zmNinja/issues/337)
+
+**Merged pull requests:**
+
+- Translations [\#446](https://github.com/pliablepixels/zmNinja/pull/446) ([maymaymay](https://github.com/maymaymay))
+
+## [v1.2.36](https://github.com/pliablepixels/zmNinja/tree/v1.2.36) (2017-02-06)
+[Full Changelog](https://github.com/pliablepixels/zmNinja/compare/v1.2.35...v1.2.36)
+
+**Implemented enhancements:**
+
+- Add ability to hide grey buttons in single monitor view [\#443](https://github.com/pliablepixels/zmNinja/issues/443)
+- Desktop app opening maximized, in full screen montage view [\#436](https://github.com/pliablepixels/zmNinja/issues/436)
+- Adding Dutch Language Files [\#433](https://github.com/pliablepixels/zmNinja/issues/433)
+- Allow for archived events to be displayed or hidden \(based on toggle switch\) [\#432](https://github.com/pliablepixels/zmNinja/issues/432)
+- Enhancement: Add event names to Event list view [\#431](https://github.com/pliablepixels/zmNinja/issues/431)
+- server settings - confirm deletion [\#423](https://github.com/pliablepixels/zmNinja/issues/423)
+- Add ability to view zones as overlays on live monitor feed [\#420](https://github.com/pliablepixels/zmNinja/issues/420)
+- Add ability to cycle between montage profiles [\#419](https://github.com/pliablepixels/zmNinja/issues/419)
+- Adding Dutch language [\#387](https://github.com/pliablepixels/zmNinja/issues/387)
+- Hide credentials of simple auth in display [\#363](https://github.com/pliablepixels/zmNinja/issues/363)
+
+**Fixed bugs:**
+
+- switching from full screen to regular causes header alignment issues\(iOS only\) [\#429](https://github.com/pliablepixels/zmNinja/issues/429)
+- when bulk frames are present, frame view while viewing footage goes wrong [\#428](https://github.com/pliablepixels/zmNinja/issues/428)
+- display cgi-bin error if a wrong cgi path is set in login even if you don't tap save [\#427](https://github.com/pliablepixels/zmNinja/issues/427)
+- Fallback Server Hangup [\#424](https://github.com/pliablepixels/zmNinja/issues/424)
+- Cannot delete events [\#422](https://github.com/pliablepixels/zmNinja/issues/422)
+- restricted users for event notification not working [\#391](https://github.com/pliablepixels/zmNinja/issues/391)
+
+**Closed issues:**
+
+- Hard coded text found [\#440](https://github.com/pliablepixels/zmNinja/issues/440)
+- Hard coded text alert found [\#437](https://github.com/pliablepixels/zmNinja/issues/437)
+- Typo in Validating-if-APIs-work-on-ZM page \(events instead of events.json\): [\#421](https://github.com/pliablepixels/zmNinja/issues/421)
+- event server settings - Strange Behaviour [\#414](https://github.com/pliablepixels/zmNinja/issues/414)
+
+**Merged pull requests:**
+
+- 440 hard coded text found  [\#442](https://github.com/pliablepixels/zmNinja/pull/442) ([steelyard-nl](https://github.com/steelyard-nl))
+- sorted keys \#437 [\#439](https://github.com/pliablepixels/zmNinja/pull/439) ([maymaymay](https://github.com/maymaymay))
+- 437 hard coded text alert found [\#438](https://github.com/pliablepixels/zmNinja/pull/438) ([steelyard-nl](https://github.com/steelyard-nl))
+- 433 adding dutch language files [\#435](https://github.com/pliablepixels/zmNinja/pull/435) ([steelyard-nl](https://github.com/steelyard-nl))
+-  you can now toggle a dev option to hide/unhide archived \(flagged\) ev… [\#434](https://github.com/pliablepixels/zmNinja/pull/434) ([maymaymay](https://github.com/maymaymay))
+- Translation update to \#423 [\#425](https://github.com/pliablepixels/zmNinja/pull/425) ([maymaymay](https://github.com/maymaymay))
+
+## [v1.2.35](https://github.com/pliablepixels/zmNinja/tree/v1.2.35) (2016-12-31)
+[Full Changelog](https://github.com/pliablepixels/zmNinja/compare/v1.2.34...v1.2.35)
+
+**Implemented enhancements:**
+
+- Add ability to show motion outlines in alarm frames \(if enabled in ZM\) [\#417](https://github.com/pliablepixels/zmNinja/issues/417)
+- Archive selected events [\#388](https://github.com/pliablepixels/zmNinja/issues/388)
+
+**Merged pull requests:**
+
+- Eci peci z tłumaczeniem ;\) Happy New Year!!! [\#418](https://github.com/pliablepixels/zmNinja/pull/418) ([maymaymay](https://github.com/maymaymay))
+- Translation update [\#416](https://github.com/pliablepixels/zmNinja/pull/416) ([maymaymay](https://github.com/maymaymay))
+
+## [v1.2.34](https://github.com/pliablepixels/zmNinja/tree/v1.2.34) (2016-12-24)
+[Full Changelog](https://github.com/pliablepixels/zmNinja/compare/v1.2.33...v1.2.34)
+
+**Implemented enhancements:**
+
+- Add ability to launch app via URL for external integration [\#411](https://github.com/pliablepixels/zmNinja/issues/411)
+- Allow for pinning and hiding monitors during rearranging in montage [\#409](https://github.com/pliablepixels/zmNinja/issues/409)
+
+**Fixed bugs:**
+
+- First time users - app gets locked if APIs are not configured \[Mostly Android\] [\#415](https://github.com/pliablepixels/zmNinja/issues/415)
+
+**Closed issues:**
+
+- Missing translations Russian [\#412](https://github.com/pliablepixels/zmNinja/issues/412)
+- Missing translations for popup buttons [\#410](https://github.com/pliablepixels/zmNinja/issues/410)
+- Mobile unable to connect to the event server [\#403](https://github.com/pliablepixels/zmNinja/issues/403)
+- Download events as avi,mov, even mp4 videos [\#334](https://github.com/pliablepixels/zmNinja/issues/334)
+
+**Merged pull requests:**
+
+- New items [\#413](https://github.com/pliablepixels/zmNinja/pull/413) ([BoskSpb](https://github.com/BoskSpb))
+
+## [v1.2.33](https://github.com/pliablepixels/zmNinja/tree/v1.2.33) (2016-12-09)
+[Full Changelog](https://github.com/pliablepixels/zmNinja/compare/v1.2.32...v1.2.33)
+
+## [v1.2.32](https://github.com/pliablepixels/zmNinja/tree/v1.2.32) (2016-12-09)
+[Full Changelog](https://github.com/pliablepixels/zmNinja/compare/v1.2.31...v1.2.32)
+
+**Implemented enhancements:**
+
+- Montage Camera Groups [\#397](https://github.com/pliablepixels/zmNinja/issues/397)
+- Multiple selectable/saveable 'Montage' views within a server profile  [\#390](https://github.com/pliablepixels/zmNinja/issues/390)
+
+**Fixed bugs:**
+
+- In some cases, events screen shows no events - even though there are events [\#408](https://github.com/pliablepixels/zmNinja/issues/408)
+
+**Closed issues:**
+
+- Translation issue [\#400](https://github.com/pliablepixels/zmNinja/issues/400)
+
+**Merged pull requests:**
+
+- translation updates [\#407](https://github.com/pliablepixels/zmNinja/pull/407) ([maymaymay](https://github.com/maymaymay))
+- Updated Portuguese Translation [\#406](https://github.com/pliablepixels/zmNinja/pull/406) ([ljpinho](https://github.com/ljpinho))
+- spanish language update translations and modifying an instruction lin… [\#404](https://github.com/pliablepixels/zmNinja/pull/404) ([fxrnando](https://github.com/fxrnando))
+- Updated 3 missing keys [\#402](https://github.com/pliablepixels/zmNinja/pull/402) ([maymaymay](https://github.com/maymaymay))
+- Translation update [\#399](https://github.com/pliablepixels/zmNinja/pull/399) ([maymaymay](https://github.com/maymaymay))
+- Translation updates [\#396](https://github.com/pliablepixels/zmNinja/pull/396) ([maymaymay](https://github.com/maymaymay))
+-  Translation adjustments. [\#393](https://github.com/pliablepixels/zmNinja/pull/393) ([maymaymay](https://github.com/maymaymay))
+- Translation updates to \#383 [\#392](https://github.com/pliablepixels/zmNinja/pull/392) ([maymaymay](https://github.com/maymaymay))
+
 ## [v1.2.31](https://github.com/pliablepixels/zmNinja/tree/v1.2.31) (2016-12-02)
 [Full Changelog](https://github.com/pliablepixels/zmNinja/compare/v1.2.30...v1.2.31)
 
@@ -22,10 +253,6 @@
 - \[h264\] add cue points in video player for alarmed frames [\#381](https://github.com/pliablepixels/zmNinja/issues/381)
 - Add ability to save animated gif version of event \(alarm frames only\) [\#379](https://github.com/pliablepixels/zmNinja/issues/379)
 
-**Fixed bugs:**
-
-- restricted users for event notification not working [\#391](https://github.com/pliablepixels/zmNinja/issues/391)
-
 **Closed issues:**
 
 - \[BUG\] Window title does not change to 'Events' when in events view [\#389](https://github.com/pliablepixels/zmNinja/issues/389)
@@ -41,7 +268,7 @@
 - minor fixes [\#376](https://github.com/pliablepixels/zmNinja/pull/376) ([maymaymay](https://github.com/maymaymay))
 
 ## [v1.2.29](https://github.com/pliablepixels/zmNinja/tree/v1.2.29) (2016-11-16)
-[Full Changelog](https://github.com/pliablepixels/zmNinja/compare/v/1.2.28...v1.2.29)
+[Full Changelog](https://github.com/pliablepixels/zmNinja/compare/v1.2.28...v1.2.29)
 
 **Implemented enhancements:**
 
@@ -68,11 +295,11 @@
 - Create locale-pl.json [\#368](https://github.com/pliablepixels/zmNinja/pull/368) ([maymaymay](https://github.com/maymaymay))
 - Adding Russian language in App [\#365](https://github.com/pliablepixels/zmNinja/pull/365) ([BoskSpb](https://github.com/BoskSpb))
 
-## [v/1.2.28](https://github.com/pliablepixels/zmNinja/tree/v/1.2.28) (2016-11-08)
-[Full Changelog](https://github.com/pliablepixels/zmNinja/compare/v1.2.28...v/1.2.28)
-
 ## [v1.2.28](https://github.com/pliablepixels/zmNinja/tree/v1.2.28) (2016-11-08)
-[Full Changelog](https://github.com/pliablepixels/zmNinja/compare/v1.2.26...v1.2.28)
+[Full Changelog](https://github.com/pliablepixels/zmNinja/compare/v/1.2.28...v1.2.28)
+
+## [v/1.2.28](https://github.com/pliablepixels/zmNinja/tree/v/1.2.28) (2016-11-08)
+[Full Changelog](https://github.com/pliablepixels/zmNinja/compare/v1.2.26...v/1.2.28)
 
 **Implemented enhancements:**
 
@@ -589,7 +816,7 @@
 - Cannot get video [\#115](https://github.com/pliablepixels/zmNinja/issues/115)
 
 ## [v0.87.3](https://github.com/pliablepixels/zmNinja/tree/v0.87.3) (2015-12-15)
-[Full Changelog](https://github.com/pliablepixels/zmNinja/compare/v0.87...v0.87.3)
+[Full Changelog](https://github.com/pliablepixels/zmNinja/compare/v0.87.2...v0.87.3)
 
 **Implemented enhancements:**
 
@@ -609,11 +836,11 @@
 
 - Timeline on v0.87.2 shows only motion events [\#105](https://github.com/pliablepixels/zmNinja/issues/105)
 
-## [v0.87](https://github.com/pliablepixels/zmNinja/tree/v0.87) (2015-11-20)
-[Full Changelog](https://github.com/pliablepixels/zmNinja/compare/v0.87.2...v0.87)
-
 ## [v0.87.2](https://github.com/pliablepixels/zmNinja/tree/v0.87.2) (2015-11-20)
-[Full Changelog](https://github.com/pliablepixels/zmNinja/compare/v0.87.1...v0.87.2)
+[Full Changelog](https://github.com/pliablepixels/zmNinja/compare/v0.87...v0.87.2)
+
+## [v0.87](https://github.com/pliablepixels/zmNinja/tree/v0.87) (2015-11-20)
+[Full Changelog](https://github.com/pliablepixels/zmNinja/compare/v0.87.1...v0.87)
 
 **Fixed bugs:**
 
