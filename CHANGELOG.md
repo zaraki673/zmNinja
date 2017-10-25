@@ -1,11 +1,84 @@
 # Change Log
 
+## [Unreleased](https://github.com/pliablepixels/zmNinja/tree/HEAD)
+
+[Full Changelog](https://github.com/pliablepixels/zmNinja/compare/v1.2.503...HEAD)
+
+**Fixed bugs:**
+
+- 1.2.503 broke timeline in Android & Desktop [\#549](https://github.com/pliablepixels/zmNinja/issues/549)
+
+**Closed issues:**
+
+- System edit privileges required to permit non-admin to change camera mode [\#548](https://github.com/pliablepixels/zmNinja/issues/548)
+- Support for multiple screens \(desktop\) [\#543](https://github.com/pliablepixels/zmNinja/issues/543)
+
+## [v1.2.503](https://github.com/pliablepixels/zmNinja/tree/v1.2.503) (2017-10-01)
+[Full Changelog](https://github.com/pliablepixels/zmNinja/compare/v1.2.44...v1.2.503)
+
+**Implemented enhancements:**
+
+- Allow running multiple, different instances of zmNinja \(desktop\) [\#542](https://github.com/pliablepixels/zmNinja/issues/542)
+- Abstract zmNinja out from ZM specifics [\#318](https://github.com/pliablepixels/zmNinja/issues/318)
+
+**Fixed bugs:**
+
+- German language - JSON corrupted -affects 1.2.500 [\#545](https://github.com/pliablepixels/zmNinja/issues/545)
+
+**Closed issues:**
+
+- make it easier to make desktop builds [\#541](https://github.com/pliablepixels/zmNinja/issues/541)
+- Explore upgrading electron wrapper to solve white screen issues [\#539](https://github.com/pliablepixels/zmNinja/issues/539)
+- All monitors view refresh rate 0 or very low on my PC/Windows installation of ZMNinja [\#527](https://github.com/pliablepixels/zmNinja/issues/527)
+
+**Merged pull requests:**
+
+- Email not configured [\#544](https://github.com/pliablepixels/zmNinja/pull/544) ([florie1706](https://github.com/florie1706))
+- kEmailNotConfigured [\#540](https://github.com/pliablepixels/zmNinja/pull/540) ([maymaymay](https://github.com/maymaymay))
+
+## [v1.2.44](https://github.com/pliablepixels/zmNinja/tree/v1.2.44) (2017-09-25)
+[Full Changelog](https://github.com/pliablepixels/zmNinja/compare/v1.2.41...v1.2.44)
+
+**Implemented enhancements:**
+
+- Montage Cycle - customize timer [\#530](https://github.com/pliablepixels/zmNinja/issues/530)
+- New language: Hungarian/Magyar [\#529](https://github.com/pliablepixels/zmNinja/issues/529)
+
+**Fixed bugs:**
+
+- zmNinja incorrectly reports invalid API [\#537](https://github.com/pliablepixels/zmNinja/issues/537)
+- Crosswalk build no longer works on newer android phones [\#536](https://github.com/pliablepixels/zmNinja/issues/536)
+- Fixes for IOS11 and iPhone X [\#534](https://github.com/pliablepixels/zmNinja/issues/534)
+- Many presets in live view results in the screen overflowing [\#517](https://github.com/pliablepixels/zmNinja/issues/517)
+
+**Closed issues:**
+
+- Mac screen sleep issue [\#538](https://github.com/pliablepixels/zmNinja/issues/538)
+- Update code base to work with new ionic dev env [\#535](https://github.com/pliablepixels/zmNinja/issues/535)
+- zmNinja fails against ZM 1.31.1  [\#533](https://github.com/pliablepixels/zmNinja/issues/533)
+- 1.30.4 API not connecting [\#523](https://github.com/pliablepixels/zmNinja/issues/523)
+- Does 1.3 work with zmninja [\#522](https://github.com/pliablepixels/zmNinja/issues/522)
+- Feature request: possibility to select a run state from zmNinja [\#520](https://github.com/pliablepixels/zmNinja/issues/520)
+- Stability problem on zmNinja on Windows 10 x64 after adding a fourth monitor [\#519](https://github.com/pliablepixels/zmNinja/issues/519)
+- fit/fill screen option issue [\#514](https://github.com/pliablepixels/zmNinja/issues/514)
+- Any chance of A10 Allwinder cpu suport? [\#513](https://github.com/pliablepixels/zmNinja/issues/513)
+
+**Merged pull requests:**
+
+- New string kCycleMontageInterval [\#532](https://github.com/pliablepixels/zmNinja/pull/532) ([florie1706](https://github.com/florie1706))
+-  \#530 - allow you to customize timer for montage cycle [\#531](https://github.com/pliablepixels/zmNinja/pull/531) ([maymaymay](https://github.com/maymaymay))
+- update language spanish language with new keys [\#525](https://github.com/pliablepixels/zmNinja/pull/525) ([fxrnando](https://github.com/fxrnando))
+- Create CODE\_OF\_CONDUCT.md [\#524](https://github.com/pliablepixels/zmNinja/pull/524) ([pliablepixels](https://github.com/pliablepixels))
+- Update locale-fr.json [\#518](https://github.com/pliablepixels/zmNinja/pull/518) ([cryptage21](https://github.com/cryptage21))
+- Added new strings according to v1.2.41 [\#512](https://github.com/pliablepixels/zmNinja/pull/512) ([florie1706](https://github.com/florie1706))
+
 ## [v1.2.41](https://github.com/pliablepixels/zmNinja/tree/v1.2.41) (2017-04-11)
 [Full Changelog](https://github.com/pliablepixels/zmNinja/compare/v1.2.40...v1.2.41)
 
 **Implemented enhancements:**
 
 - Implement concept of 'default profile' & 'workspace' in Montage [\#509](https://github.com/pliablepixels/zmNinja/issues/509)
+- Support Amcrest PTZ in zmNinja [\#508](https://github.com/pliablepixels/zmNinja/issues/508)
 - Allow for montage scaling at increments of 5% \(currently 10%\) [\#505](https://github.com/pliablepixels/zmNinja/issues/505)
 - In monitor list \(Montage screen\) make the color of disabled monitors more prominent [\#503](https://github.com/pliablepixels/zmNinja/issues/503)
 
@@ -28,7 +101,10 @@
 -  \#509 - default profile for all monitors and "workspace" [\#510](https://github.com/pliablepixels/zmNinja/pull/510) ([maymaymay](https://github.com/maymaymay))
 
 ## [v1.2.40](https://github.com/pliablepixels/zmNinja/tree/v1.2.40) (2017-03-19)
-[Full Changelog](https://github.com/pliablepixels/zmNinja/compare/v1.2.39...v1.2.40)
+[Full Changelog](https://github.com/pliablepixels/zmNinja/compare/v/1.2.40...v1.2.40)
+
+## [v/1.2.40](https://github.com/pliablepixels/zmNinja/tree/v/1.2.40) (2017-03-19)
+[Full Changelog](https://github.com/pliablepixels/zmNinja/compare/v1.2.39...v/1.2.40)
 
 **Fixed bugs:**
 
@@ -268,7 +344,7 @@
 - minor fixes [\#376](https://github.com/pliablepixels/zmNinja/pull/376) ([maymaymay](https://github.com/maymaymay))
 
 ## [v1.2.29](https://github.com/pliablepixels/zmNinja/tree/v1.2.29) (2016-11-16)
-[Full Changelog](https://github.com/pliablepixels/zmNinja/compare/v1.2.28...v1.2.29)
+[Full Changelog](https://github.com/pliablepixels/zmNinja/compare/v/1.2.28...v1.2.29)
 
 **Implemented enhancements:**
 
@@ -295,11 +371,11 @@
 - Create locale-pl.json [\#368](https://github.com/pliablepixels/zmNinja/pull/368) ([maymaymay](https://github.com/maymaymay))
 - Adding Russian language in App [\#365](https://github.com/pliablepixels/zmNinja/pull/365) ([BoskSpb](https://github.com/BoskSpb))
 
-## [v1.2.28](https://github.com/pliablepixels/zmNinja/tree/v1.2.28) (2016-11-08)
-[Full Changelog](https://github.com/pliablepixels/zmNinja/compare/v/1.2.28...v1.2.28)
-
 ## [v/1.2.28](https://github.com/pliablepixels/zmNinja/tree/v/1.2.28) (2016-11-08)
-[Full Changelog](https://github.com/pliablepixels/zmNinja/compare/v1.2.26...v/1.2.28)
+[Full Changelog](https://github.com/pliablepixels/zmNinja/compare/v1.2.28...v/1.2.28)
+
+## [v1.2.28](https://github.com/pliablepixels/zmNinja/tree/v1.2.28) (2016-11-08)
+[Full Changelog](https://github.com/pliablepixels/zmNinja/compare/v1.2.26...v1.2.28)
 
 **Implemented enhancements:**
 

@@ -1,11 +1,20 @@
 const electron = require('electron');
 const windowStateKeeper = require('electron-window-state');
 const {app, globalShortcut} = electron;
+const {dialog} = require('electron')
 
 // Module to create native browser window.
 const {BrowserWindow} = electron;
 var isFs = false;
+var argv = require('minimist')(process.argv.slice(1));
 
+console.log ("ARGV="+JSON.stringify(argv));
+
+if (argv.path) {
+  console.log ("PATH SET TO "+argv.path);
+  app.setPath("userData", argv.path);
+  console.log ("switching storage to: "+app.getPath("userData"));
+}
 
 
 
@@ -31,8 +40,10 @@ if (shouldQuit) {
 
 function createWindow() {
 
+
 const mx = globalShortcut.register('CommandOrControl+Alt+F', () => {
-    console.log('CommandOrControl+F is pressed');
+
+    console.log('Command Or Control+F is pressed');
     isFs = !isFs;
     win.setFullScreen(isFs);
   })
@@ -59,7 +70,7 @@ const mx = globalShortcut.register('CommandOrControl+Alt+F', () => {
 
   mainWindowState.manage(win);
   // fs will be arg 1 if its not run in electron debug mode
-  if (process.argv.slice(1)=='fs' || process.argv.slice(2)=='fs')
+  if (argv.fs)
   {
         win.setFullScreen(true);
         isFs = true;
@@ -104,6 +115,10 @@ app.on('activate', () => {
   if (win === null) {
     createWindow();
   }
+});
+
+app.on('uncaughtException', function (err) {
+  console.log("***WHOOPS TIME****"+err);
 });
 
 app.on('will-quit', () => {

@@ -49,7 +49,8 @@ angular.module('zmApp', [
         logFile: 'zmNinjaLog.txt',
         authoremail: 'pliablepixels+zmNinja@gmail.com',
         logFileMaxSize: 20000, // after this limit log gets reset
-        loginInterval: 300000, //5m*60s*1000 - ZM auto login after 5 mins
+        //loginInterval: 300000, //5m*60s*1000 - ZM auto login after 5 mins
+        loginInterval: 1800000, //30m*60s*1000 - ZM auto login after 30 mins
 
         //loginInterval: 30000,
         updateCheckInterval: 86400000, // 24 hrs
@@ -90,7 +91,7 @@ angular.module('zmApp', [
         minCycleTime: 5,
 
         eventPlaybackQueryLowBW: 6000,
-        loginIntervalLowBW: 600000, //10m login
+        loginIntervalLowBW: 1800000, //30m login
         eventSingleImageQualityLowBW: 70,
         monSingleImageQualityLowBW: 70,
         montageQualityLowBW: 50,
@@ -592,6 +593,17 @@ angular.module('zmApp', [
                     //  console.log ("No cookie present in " + config.url);
                 }
 
+                if ($rootScope.apiAuth)
+                {
+                    console.log ("********** API AUTH");
+                    if (config.url.indexOf("/api/") > -1 )
+                    {
+                        config.url = config.url + "&auth="+$rootScope.authSession;
+                        console.log ("********** API AUTH muggled to:"+config.url);
+                        
+                    }
+                } 
+
                 if ((config.url.indexOf("/api/states/change/") > -1) ||
                     (config.url.indexOf("getDiskPercent.json") > -1) ||
                     (config.url.indexOf("daemonCheck.json") > -1) ||
@@ -610,6 +622,7 @@ angular.module('zmApp', [
                     // config.timeout = zm.httpTimeout;
 
                 }
+
                 return config;
             },
 
@@ -841,7 +854,17 @@ angular.module('zmApp', [
             var d = $q.defer();
             var ld = NVRDataModel.getLogin();
 
+
+            /*$rootScope.authSession = 'Test';
+            $rootScope.apiAuth = true;
+            d.resolve ("Login Success");
+            $rootScope.loggedIntoZm = 1;
+            $rootScope.$emit('auth-success', 'hash API mode');
+
             console.log(">>>>>>>>>>> DO LOGIN");
+            if (1) {return (d.promise);}*/
+
+
 
             
             NVRDataModel.processFastLogin()
@@ -1407,12 +1430,14 @@ angular.module('zmApp', [
 
             NVRDataModel.log("You are running on " + $rootScope.platformOS);
 
-            if (window.cordova)
-                MobileAccessibility.getTextZoom(getTextZoomCallback);
+            console.log ("Mobile acc");
+           if (window.cordova)
+               MobileAccessibility.getTextZoom(getTextZoomCallback);
 
             // $rootScope.lastState = "events";
             //$rootScope.lastStateParam = "0";
 
+console.log ("localforage config");
             localforage.config({
                 name: zm.dbName
 
@@ -1439,6 +1464,7 @@ angular.module('zmApp', [
 
             }
 
+console.log ("forage driver");
             localforage.defineDriver(window.cordovaSQLiteDriver).then(function () {
                 return localforage.setDriver(
                     // Try setting cordovaSQLiteDriver if available,
@@ -1532,6 +1558,7 @@ angular.module('zmApp', [
             });
 
             function continueInitialInit() {
+                console.log ("continueinit");
                 var pixelRatio = window.devicePixelRatio || 1;
                 $rootScope.devWidth = ((window.innerWidth > 0) ? window.innerWidth : screen.width);
                 $rootScope.devHeight = ((window.innerHeight > 0) ? window.innerHeight : screen.height);
@@ -1541,10 +1568,12 @@ angular.module('zmApp', [
                 $rootScope.$stateParams = $stateParams;
 
                 if (window.cordova && window.cordova.plugins.Keyboard) {
-                    cordova.plugins.Keyboard.disableScroll(true);
+                    console.log ("no keyboard");
+                   // cordova.plugins.Keyboard.disableScroll(true);
                 }
                 if (window.StatusBar) {
                     // org.apache.cordova.statusbar required
+                    console.log ("statusbar");
                     NVRDataModel.log("Updating statusbar");
                     StatusBar.styleDefault();
                     //StatusBar.overlaysWebView(false);
@@ -1552,10 +1581,12 @@ angular.module('zmApp', [
                 }
 
                 if (window.cordova) {
+                    console.log ("Hiding splash");
                     $cordovaSplashscreen.hide();
 
 
 
+                    console.log ("app version");
                     cordova.getAppVersion.getVersionNumber().then(function (version) {
                         appVersion = version;
                         NVRDataModel.log("App Version: " + appVersion);
@@ -1563,8 +1594,10 @@ angular.module('zmApp', [
                     });
                 }
 
+                console.log ("file logger");
                 $fileLogger.checkFile().then(function (resp) {
                     if (parseInt(resp.size) > zm.logFileMaxSize) {
+                        console.log ("inside file logger");
 
                         $fileLogger.deleteLogfile().then(function () {
                             NVRDataModel.log("Deleting old log file as it exceeds " + zm.logFileMaxSize + " bytes");
@@ -1817,7 +1850,7 @@ angular.module('zmApp', [
 
         //$translateProvider.useLocalStorage();
 
-        $translateProvider.registerAvailableLanguageKeys(['en', 'de', 'es', 'fr', 'it', 'ru', 'ja', 'ko', 'nl', 'pl', 'zh', 'zh_CN', 'zh_TW', 'pt', 'ar', 'hi'], {
+        $translateProvider.registerAvailableLanguageKeys(['en', 'de', 'es', 'fr', 'it', 'ru', 'ja', 'ko', 'nl', 'pl', 'zh', 'zh_CN', 'zh_TW', 'pt', 'ar', 'hi', 'hu'], {
             'en_*': 'en',
             'de_*': 'de',
             'es_*': 'es',
@@ -1831,6 +1864,7 @@ angular.module('zmApp', [
             'pl_*': 'pl',
             'ar_*': 'ar',
             'hi_*': 'hi',
+            'hu_*':'hu',
             '*': 'en' // must be last
         });
 

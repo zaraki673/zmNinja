@@ -35,6 +35,7 @@ if [ "$BUILD_MODE" = "xwalk" ] || [ "$BUILD_MODE" = "all" ]; then
     cordova platform add android
     cordova plugin remove cordova-plugin-crosswalk-webview
     echo "Adding crosswalk..."
+    #cordova plugin add cordova-plugin-crosswalk-webview
     cordova plugin add cordova-plugin-crosswalk-webview@2.2.0  --variable XWALK_MODE="lite" --variable "XWALK_VERSION"="17.46.459.1"
     #ionic plugin add cordova-plugin-crosswalk-webview 
     # crosswalk handles SSL certificate handling in a different way
@@ -43,7 +44,7 @@ if [ "$BUILD_MODE" = "xwalk" ] || [ "$BUILD_MODE" = "all" ]; then
     cordova plugin remove cordova-plugin-certificates
     cordova plugin add https://github.com/danjarvis/cordova-plugin-crosswalk-certificate
     cp "$NINJAKEYSTORE" platforms/android/
-    cordova build android --release 
+    cordova build android --release  -- --targetSdkVersion=23
     
     # copy builds to my release directory
     cp platforms/android/build/outputs/apk/android-x86-release-unsigned.apk release_files/

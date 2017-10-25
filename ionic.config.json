@@ -1,27 +1,15 @@
 {
   "name": "zmNinja",
-  "app_id": "8f73ad5f",
-  "defaultBrowser": "google chrome",
-  "proxies": [
-    {
-      "path": "/zm",
-      "proxyUrl": "http://server/zm",
-      "rejectUnauthorized": false
-    }
-  ],
-  "browsers": [
-    {
-      "platform": "android",
-      "browser": "crosswalk",
-      "version": "12.41.296.5"
-    }
-  ],
-  "gulpStartupTasks": [
-    "sass",
-    "watch"
-  ],
+  "app_id": "",
+  "type": "ionic1",
+  "integrations": {
+    "gulp": {},
+    "cordova": {}
+  },
   "watchPatterns": [
+    "scss/**/*",
     "www/**/*",
-    "!www/lib/**/*"
+    "!www/lib/**/*",
+    "!www/**/*.map"
   ]
 }
