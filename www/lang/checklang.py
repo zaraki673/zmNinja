@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 from __future__ import absolute_import, division, print_function, unicode_literals
 import sys
 import simplejson as json
@@ -24,7 +23,7 @@ def usage():
 
 
 #beautifies a given file
-def beautify(fi,ki):
+def beautify(fi,ki, ek):
   global globOverwrite
   if globOverwrite:
     prefix=''
@@ -34,8 +33,11 @@ def beautify(fi,ki):
   w = len (max(ki, key=len))
   pretty=[]
   for k in sorted(ki):
-    line = "    \"%s\"%s:\"%s\"" %(k,' '*(w-len(k)+1),ki[k])
-    pretty.append(line)
+    if not k in ek:
+        line = "    \"%s\"%s:\"%s\"" %(k,' '*(w-len(k)+1),ki[k])
+        pretty.append(line)
+    else:
+        print ("Skipping ",k," as its an extra key")
   pFh=open(prefix+fi,"w")
   pFh.write('{\n')
   if sys.version_info >=(3, 0):
@@ -48,6 +50,7 @@ def beautify(fi,ki):
 #Compares keys in language file
 
 def compare(fname):
+  
   beaut="no"
   global globGood, globBad,globOverwrite, globFile, globBeautify
   with open (i) as json_data:
@@ -58,9 +61,9 @@ def compare(fname):
         globBad+=1
         return
       json_data.close()
-  diffOrig = set(origKeys.keys()) - set(newKeys.keys())
-  diffNew = set(newKeys.keys()) - set(origKeys.keys())
-  if len(diffOrig)==0 and len (diffNew)==0:
+  missingKeys = set(origKeys.keys()) - set(newKeys.keys())
+  extraKeys = set(newKeys.keys()) - set(origKeys.keys())
+  if len(missingKeys)==0:
     status = "GOOD"
     globGood+=1
     if globBeautify and (globFile == fname or globFile == ""):
@@ -68,17 +71,19 @@ def compare(fname):
   else:
     status = "ERROR"
     globBad+=1
+    if globBeautify and (globFile == fname or globFile == ""):
+      beaut="YES"
   print("\n-------Checking:%s:%s, beautify:%s---------" % (fname,status,beaut))
   print("master keys:%d, %s keys:%d" % (len(origKeys), i, len(newKeys)))
   if beaut=="YES":
-      beautify(fname,newKeys)
-  if len(diffOrig) > 0:
+      beautify(fname,newKeys, extraKeys)
+  if len(missingKeys) > 0:
     print("Keys not present in :%s" %fname)
-    for x in diffOrig:
+    for x in missingKeys:
       print("-->",x)
-  if len(diffNew) > 0:
+  if len(extraKeys) > 0:
     print("Extra keys present in :%s" %fname)
-    for x in diffNew:
+    for x in extraKeys:
       print("-->",x)
   
 

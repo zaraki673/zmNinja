@@ -3,11 +3,12 @@
 
 *.swp
 ionic.project
-www/lib/
+#www/lib/
 desktop/
 node_modules/
 platforms/
 release_files/
+debug_files/
 plugins/*
 engine/
 /ionic.project
@@ -16,8 +17,9 @@ zmNinja.sublime-project
 zmNinja.sublime-workspace
 .vscode/
 typings/
-jsconfig.json
 package-lock.json
+dist/
+.gradle/
 
 
 
